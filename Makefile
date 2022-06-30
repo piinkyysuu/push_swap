@@ -6,7 +6,7 @@
 #    By: thule <thule@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/23 14:12:18 by thule             #+#    #+#              #
-#    Updated: 2022/06/23 15:28:37 by thule            ###   ########.fr        #
+#    Updated: 2022/06/30 14:22:30 by thule            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,10 +20,10 @@ INCLUDES_DIR = ./includes/
 CHECKER_FILES = checker.c
 PUSH_SWAP_FILES = 
 
-CHECKER_SRC_DIR = ./checker_srcs/
+CHECKER_SRC_DIR = ./srcs/checker/
 CHECKER_SRC = $(addprefix $(CHECKER_SRC_DIR), $(CHECKER_FILES))
 
-PUSH_SWAP_SRC_DIR = ./push_swap_srcs/
+PUSH_SWAP_SRC_DIR = ./srcs/push_swap/
 PUSH_SWAP_SRC = $(addprefix $(PUSH_SWAP_SRC_DIR), $(PUSH_SWAP_FILES))
 
 OBJS_DIR = ./objs/
