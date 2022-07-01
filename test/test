@@ -15,3 +15,10 @@ TEST INPUT:
 		./checker -2147483648 2147483647 2 4 1 "31"
 		./checker -10 -20 -30 -3 -1 1 43 0
 		./checker -10 -20 -30 -3 -1 1 43  2147483647
+
+./checker 3 2 1 0
+rra
+pb
+sa
+rra
+pa
