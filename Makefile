@@ -6,7 +6,7 @@
 #    By: thule <thule@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/23 14:12:18 by thule             #+#    #+#              #
-#    Updated: 2022/07/01 14:56:01 by thule            ###   ########.fr        #
+#    Updated: 2022/07/01 16:10:06 by thule            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ INCLUDES_DIR = ./includes/
 
 CHECKER_FILES = checker.c
 PUSH_SWAP_FILES = 
-SHARED_FILES = instructions.c
+SHARED_FILES = instructions.c stack_utils.c create_stack.c
 
 CHECKER_SRC_DIR = ./srcs/checker/
 CHECKER_SRC = $(addprefix $(CHECKER_SRC_DIR), $(CHECKER_FILES))
