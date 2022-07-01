@@ -6,7 +6,7 @@
 /*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/08 11:59:44 by thule             #+#    #+#             */
-/*   Updated: 2022/06/21 17:41:24 by thule            ###   ########.fr       */
+/*   Updated: 2022/07/01 15:02:49 by thule            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,7 @@ char			*ft_ulltoa(unsigned long long int n);
 int				ft_max(int a, int b);
 int				ft_min(int a, int b);
 long long int	ft_abs(long long int nbr);
+long			ft_atol(const char *str);
 
 /*_________GNL_________*/
 int				get_next_line(const int fd, char **line);
