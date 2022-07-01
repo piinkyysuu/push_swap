@@ -6,7 +6,7 @@
 /*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/23 14:42:24 by thule             #+#    #+#             */
-/*   Updated: 2022/06/29 13:29:37 by thule            ###   ########.fr       */
+/*   Updated: 2022/07/01 15:00:13 by thule            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,9 @@
 #include <stdbool.h>
 #include <limits.h>
 
+#include "libft.h"
+#include "shared.h"
+
 
 #define STACK_EMPTY LONG_MIN
 
-typedef struct s_stack
-{
-	int value;
-	struct s_stack *next;
-} t_stack;
