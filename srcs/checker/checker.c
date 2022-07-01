@@ -6,14 +6,28 @@
 /*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/23 14:39:09 by thule             #+#    #+#             */
-/*   Updated: 2022/06/30 14:27:39 by thule            ###   ########.fr       */
+/*   Updated: 2022/07/01 20:04:48 by thule            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
 #include "checker.h"
 
-void print_stack(t_stack *head)
+enum e_instructions
+{
+	sa,
+	ra,
+	rra,
+	sb,
+	rb,
+	rrb
+	// pa,
+	// pb,
+	// ss,
+	// rr,
+	// rrr
+};
+
+void print_stack(t_stack *head, char c)
 {
 	t_stack *tmp = head;
 	while (tmp)
@@ -21,192 +35,203 @@ void print_stack(t_stack *head)
 		printf("%d\n", tmp->value);
 		tmp = tmp->next;
 	}
+	printf("-\n%c\n", c);
 }
 
-void delete_stack(t_stack **head)
-{
-	t_stack *next;
-	t_stack *current;
-
-	current = *head;
-	while (current)
-	{
-		next = current->next;
-		free(current);
-		current = next;
-	}
-	*head = NULL;
-}
-
-t_stack *create_new_element(int value)
-{
-	t_stack *new;
-
-	new = (t_stack *)malloc(sizeof(t_stack));
-	if (new)
-	{
-		new->value = value;
-		new->next = NULL;
-	}
-	return (new);
-}
-
-// check for duplicates, if yes, return 0
-// if no duplicates at all, insert the new elements
-// at the end of the list
-int check_then_insert(t_stack **head, int value)
+int count_stack(t_stack **head)
 {
 	t_stack *tmp;
+	int len;
 
+	len = 0;
 	tmp = *head;
 	while (tmp)
 	{
-		if (tmp->value == value)
-			return (0);
-		if (tmp->next == NULL)
-		{
-			tmp->next = create_new_element(value);
-			if (tmp->next == NULL)
-				return (0);
-			break;
-		}
+		len++;
 		tmp = tmp->next;
 	}
-	if (!tmp)
-	{
-		*head = create_new_element(value);
-		if (!(*head))
-			return (0);
-	}
-	return (1);
+	return len;
 }
 
-// convert string to long
-long ft_atol(const char *str)
+void print_2_stacks(t_stack *a, t_stack *b)
 {
-	short int sign;
-	unsigned long acc;
-
-	sign = 1;
-	acc = 0;
-	while (ft_isspace(*str))
-		str++;
-	if (*str == '-' || *str == '+')
+	int a_len = count_stack(&a);
+	int b_len = count_stack(&b);
+	t_stack *t_a = a;
+	t_stack *t_b = b;
+	int max_len = a_len > b_len ? a_len : b_len;
+	while (max_len >= 0)
 	{
-		if (*str == '-')
-			sign = -1;
-		str++;
-	}
-	while (ft_isdigit(*str) && *str)
-	{
-		acc = acc * 10 + (*str - 48);
-		str++;
-	}
-	return (acc * sign);
-}
-
-/*
-Return 1 if there is only spaces or/and numbers. Otherwise, return 0
-*/
-int space_and_digit_check(char *array[])
-{
-	int x;
-	int y;
-
-	x = 1;
-	y = 0;
-	while (array[x])
-	{
-		y = 0;
-		while (array[x][y])
+		if (a_len > max_len)
 		{
-			if (!ft_isdigit(array[x][y]) && !ft_isspace(array[x][y]) && 
-				array[x][y] != '-' && array[x][y] != '+')
-				return (0);
-			if ((array[x][y] == '-' || array[x][y] == '+') && !ft_isdigit(array[x][y + 1]))
-				return (0);
-			y++;
+			printf("%d", a->value);
+			a = a->next;
 		}
-		x++;
-	}
-	return (1);
-}
-
-int number_len(long n, int base)
-{
-	int len;
-	int sign;
-
-	len = 0;
-	sign = 0;
-	if (n < 0)
-	{
-		n = -n;
-		sign = 1;
-	}
-	if (n == 0)
-		return (1);
-	while (n > 0)
-	{
-		n = n / base;
-		len++;
-	}
-	return (len + sign);
-}
-
-int create_stack(int amount, char *array[], t_stack **head)
-{
-	size_t index;
-	long number;
-
-	index = 1;
-	if (!space_and_digit_check(array))
-		return (0);
-	while (index < amount)
-	{
-		while (*(array[index]))
+		if (b_len > max_len)
 		{
-			if (*(array[index]) == '+')
-				(array[index])++;
-			number = ft_atol(array[index]);
-			if (number >= INT_MIN && number <= INT_MAX)
-			{
-				if (!check_then_insert(head, number))
-				{
-					delete_stack(head);
-					return 0;
-				}
-			}
-			else
-			{
-				delete_stack(head);
-				return (0);
-			}
-			array[index] = array[index] + number_len(number, 10);
-			while (ft_isspace(*(array[index])))
-				(array[index])++;
+			printf("			%d\n", b->value);
+			b = b->next;
 		}
+		else
+			printf("\n");
+		max_len--;
+	}
+	printf("-			-\n");
+	printf("a			b\n");
+}
+
+int solve_stack(char *line, t_stack **a, t_stack **b)
+{
+	// printf("solve_stack called\n");
+	//                0     1      2     3     4     5      6     7     8     9      10
+	char *str[11] = {"sa", "ra", "rra", "sb", "rb", "rrb", "pa", "pb", "ss", "rr", "rrr"};
+	typedef void general(t_stack **head);
+	t_stack **tmp = b;
+	general *arr[6];
+	int index = 0;
+
+	arr[sa] = swap;
+	arr[sb] = swap;
+	arr[ra] = rotate;
+	arr[rb] = rotate;
+	arr[rra] = reverse_rotate;
+	arr[rrb] = reverse_rotate;
+	while (index < 11)
+	{
+		if (!ft_strcmp(str[index], line))
+			break;
 		index++;
 	}
+	if (index < 3)
+		tmp = a;
+	if (index < 6)
+	{
+		arr[index](tmp);
+	}
+	else if (index == 6)
+	{
+		push(a, b);
+	}
+	else if (index == 7)
+	{
+		push(b, a);
+	}
+	else if (index == 8)
+	{
+		swap(a);
+		swap(b);
+	}
+	else if (index == 9)
+	{
+		rotate(a);
+		rotate(b);
+	}
+	else if (index == 10)
+	{
+		reverse_rotate(a);
+		reverse_rotate(b);
+	}
+	else
+		return (0);
 	return (1);
 }
 
 int main(int argc, char *argv[])
 {
 	t_stack *a;
+	t_stack *b;
+	char *line;
+	int index = 0;
+	char *str[11] = {"sa", "sb", "ss", "pa", "pb", "ra", "rb", "rr", "rra", "rrb", "rrr"};
+
 	a = NULL;
+	b = NULL;
+	line = NULL;
 	if (argc < 2)
 		return (0);
-
 	if (!create_stack(argc, argv, &a))
+		write(2, "Error\n", 6);
+	// else
+	// {
+	// 	printf("og\n");
+	// 	printf("----------------------------------");
+	// 	print_2_stacks(a, b);
+	// 	printf("\n");
+	// 	while (get_next_line(0, &line))
+	// 	{
+	// 		printf("----------------------------------");
+	// 		index = 0;
+	// 		while (str[index])
+	// 		{
+	// 			if (!ft_strcmp(str[index], line))
+	// 				break;
+	// 			index++;
+	// 		}
+	// 		switch (index)
+	// 		{
+	// 		case 0:
+	// 			swap(&a);
+	// 			break;
+	// 		case 1:
+	// 			swap(&b);
+	// 			break;
+	// 		case 2:
+	// 			swap(&a);
+	// 			swap(&b);
+	// 			break;
+	// 		case 3:
+	// 			push(&a, &b);
+	// 			break;
+	// 		case 4:
+	// 			push(&b, &a);
+	// 			break;
+	// 		case 5:
+	// 			rotate(&a);
+	// 			break;
+	// 		case 6:
+	// 			rotate(&b);
+	// 			break;
+	// 		case 7:
+	// 			rotate(&a);
+	// 			rotate(&b);
+	// 			break;
+	// 		case 8:
+	// 			reverse_rotate(&a);
+	// 			break;
+	// 		case 9:
+	// 			reverse_rotate(&b);
+	// 			break;
+	// 		case 10:
+	// 			reverse_rotate(&a);
+	// 			reverse_rotate(&b);
+	// 			break;
+	// 		case 11:
+	// 			printf("not exists");
+	// 			break;
+	// 		}
+	// 		print_2_stacks(a, b);
+	// 		printf("\n");
+	// 		ft_strdel(&line);
+	// 	}
+	// }
+
+	printf("og\n");
+	printf("----------------------------------");
+	print_2_stacks(a, b);
+	printf("\n");
+	while (get_next_line(0, &line))
 	{
-		printf("ERROR!\n");
+		printf("----------------------------------");
+		solve_stack(line, &a, &b);
+		print_2_stacks(a, b);
+		ft_strdel(&line);
+		printf("\n");
 	}
-	else
-	{
-		printf("\n-----------------------------\n");
-		print_stack(a);
-	}
+
+	// print_2_stacks(a, b);
+	// printf("\n-------------------------\n");
+	// reverse_rotate(&a);
+	// print_2_stacks(a, b);
 
 	return (0);
 }
