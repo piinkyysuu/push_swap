@@ -6,7 +6,7 @@
 /*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 14:48:59 by thule             #+#    #+#             */
-/*   Updated: 2022/07/01 19:40:26 by thule            ###   ########.fr       */
+/*   Updated: 2022/07/01 19:52:56 by thule            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void rotate(t_stack **head)
 	t_stack *tmp;
 	t_stack *current;
 
-	if (!tmp || !(tmp->next))
+	if (!(*head) || !((*head)->next))
 		return;
 	tmp = *head;
 	*head = (*head)->next;
