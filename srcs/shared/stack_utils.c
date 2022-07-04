@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   stack_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
+/*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 15:55:23 by thule             #+#    #+#             */
-/*   Updated: 2022/07/01 15:56:15 by thule            ###   ########.fr       */
+/*   Updated: 2022/07/04 15:47:55 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,3 +40,55 @@ t_stack *create_new_element(int value)
 	return (new);
 }
 
+void print_stack(t_stack *head, char c)
+{
+	t_stack *tmp = head;
+	while (tmp)
+	{
+		printf("%d\n", tmp->value);
+		tmp = tmp->next;
+	}
+	printf("-\n%c\n", c);
+}
+
+int count_stack(t_stack **head)
+{
+	t_stack *tmp;
+	int len;
+
+	len = 0;
+	tmp = *head;
+	while (tmp)
+	{
+		len++;
+		tmp = tmp->next;
+	}
+	return len;
+}
+
+void print_2_stacks(t_stack *a, t_stack *b)
+{
+	int a_len = count_stack(&a);
+	int b_len = count_stack(&b);
+	t_stack *t_a = a;
+	t_stack *t_b = b;
+	int max_len = a_len > b_len ? a_len : b_len;
+	while (max_len >= 0)
+	{
+		if (a_len > max_len)
+		{
+			printf("%d", a->value);
+			a = a->next;
+		}
+		if (b_len > max_len)
+		{
+			printf("			%d\n", b->value);
+			b = b->next;
+		}
+		else
+			printf("\n");
+		max_len--;
+	}
+	printf("-			-\n");
+	printf("a			b\n");
+}
