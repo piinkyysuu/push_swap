@@ -6,7 +6,7 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/23 14:39:09 by thule             #+#    #+#             */
-/*   Updated: 2022/07/04 15:47:52 by thle             ###   ########.fr       */
+/*   Updated: 2022/07/04 16:00:10 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,23 @@ void assign_index_for_array(void (*instruction[9])(t_stack **head))
 	instruction[rrr] = reverse_rotate;
 }
 
+int is_stack_sorted(t_stack **head)
+{
+	t_stack *tmp;
+	int value;
+
+	tmp = *head;
+	value = tmp->value;
+	tmp = tmp->next;
+	while (tmp->next)
+	{
+		if (value > tmp->value)
+			return (0);
+		tmp = tmp->next;
+	}
+	return (1);
+}
+
 int main(int argc, char *argv[])
 {
 	t_stack *a;
@@ -98,6 +115,10 @@ int main(int argc, char *argv[])
 			ft_strdel(&line);
 		}
 		print_2_stacks(a, b);
+		if (!is_stack_sorted(&a) || b)
+			printf("wrong\n");
+		else
+			printf("correct\n");
 		delete_stack(&a);
 		delete_stack(&b);
 	}
