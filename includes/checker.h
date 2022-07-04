@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   checker.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
+/*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/23 14:42:24 by thule             #+#    #+#             */
-/*   Updated: 2022/07/01 15:00:13 by thule            ###   ########.fr       */
+/*   Updated: 2022/07/04 15:18:06 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,3 +21,17 @@
 
 #define STACK_EMPTY LONG_MIN
 
+enum e_instructions
+{
+	sa,
+	ra,
+	rra,
+	sb,
+	rb,
+	rrb,
+	ss,
+	rr,
+	rrr,
+	pa,
+	pb
+};
