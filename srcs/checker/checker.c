@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   checker.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
+/*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/23 14:39:09 by thule             #+#    #+#             */
-/*   Updated: 2022/07/01 20:04:48 by thule            ###   ########.fr       */
+/*   Updated: 2022/07/04 13:10:25 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,6 @@ enum e_instructions
 	sb,
 	rb,
 	rrb
-	// pa,
-	// pb,
-	// ss,
-	// rr,
-	// rrr
 };
 
 void print_stack(t_stack *head, char c)
