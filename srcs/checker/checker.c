@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   checker.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/23 14:39:09 by thule             #+#    #+#             */
-/*   Updated: 2022/07/04 16:00:10 by thle             ###   ########.fr       */
+/*   Updated: 2022/07/05 11:45:27 by thule            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ int solve_stack(void (*instruction[9])(t_stack **head),
 	{
 		if (index >= 3)
 			instruction[index](b);
-		instruction[index](a);
+		else
+			instruction[index](a);
 	}
 	else if (index >= 6 && index < 9)
 	{
@@ -70,18 +71,26 @@ void assign_index_for_array(void (*instruction[9])(t_stack **head))
 
 int is_stack_sorted(t_stack **head)
 {
+	printf("\n---------------------------\n");
 	t_stack *tmp;
 	int value;
 
 	tmp = *head;
 	value = tmp->value;
 	tmp = tmp->next;
-	while (tmp->next)
+	printf("inital value: %d\n", value);
+	while (tmp)
 	{
+		printf("value:	%d	|	tmp->value:	%d\n", value, tmp->value);
 		if (value > tmp->value)
+		{
+			printf("\n---------------------------\n");
 			return (0);
+		}
+		value = tmp->value;
 		tmp = tmp->next;
 	}
+	printf("\n---------------------------\n");
 	return (1);
 }
 
@@ -102,8 +111,11 @@ int main(int argc, char *argv[])
 		write(2, "Error\n", 6);
 	else
 	{
+		print_2_stacks(a, b);
+		printf("\n");
 		while (get_next_line(0, &line))
 		{
+			printf("---------------------------------------");
 			if (!solve_stack(instruction, line, &a, &b))
 			{
 				write(2, "Error\n", 6);
@@ -112,13 +124,16 @@ int main(int argc, char *argv[])
 				return (0);
 				// break;
 			}
+			print_2_stacks(a, b);
+			printf("\n");
 			ft_strdel(&line);
 		}
+		printf("---------------------------------------");
 		print_2_stacks(a, b);
 		if (!is_stack_sorted(&a) || b)
-			printf("wrong\n");
+			printf("\n%s***wrong***\n", RED);
 		else
-			printf("correct\n");
+			printf("\n%s***correct***\n", GREEN);
 		delete_stack(&a);
 		delete_stack(&b);
 	}
