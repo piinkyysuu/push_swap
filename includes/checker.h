@@ -6,7 +6,7 @@
 /*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/23 14:42:24 by thule             #+#    #+#             */
-/*   Updated: 2022/07/05 10:51:32 by thule            ###   ########.fr       */
+/*   Updated: 2022/07/05 13:22:17 by thule            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,3 +44,5 @@ enum e_instructions
 	pa,
 	pb
 };
+
+int solve_stack(t_stack *a, t_stack *b, void (*instruction[9])(t_stack **head));
