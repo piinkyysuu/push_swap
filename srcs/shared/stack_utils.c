@@ -3,14 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   stack_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 15:55:23 by thule             #+#    #+#             */
-/*   Updated: 2022/07/04 15:47:55 by thle             ###   ########.fr       */
+/*   Updated: 2022/07/12 18:01:00 by thule            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shared.h"
+
+int is_stack_sorted(t_stack **head)
+{
+	t_stack *tmp;
+	int value;
+
+	tmp = *head;
+	value = tmp->value;
+	tmp = tmp->next;
+	while (tmp)
+	{
+		if (value > tmp->value)
+		{
+			return (0);
+		}
+		value = tmp->value;
+		tmp = tmp->next;
+	}
+	return (1);
+}
 
 void delete_stack(t_stack **head)
 {

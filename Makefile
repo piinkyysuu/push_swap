@@ -6,7 +6,7 @@
 #    By: thule <thule@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/23 14:12:18 by thule             #+#    #+#              #
-#    Updated: 2022/07/05 13:20:27 by thule            ###   ########.fr        #
+#    Updated: 2022/07/12 18:05:24 by thule            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,9 +17,9 @@ PUSH_SWAP = push_swap
 
 INCLUDES_DIR = ./includes/
 
-CHECKER_FILES = checker.c solve_stack.c
-PUSH_SWAP_FILES = 
-SHARED_FILES = instructions.c stack_utils.c create_stack.c
+CHECKER_FILES = checker.c
+PUSH_SWAP_FILES = push_swap.c
+SHARED_FILES = operations.c stack_utils.c create_stack.c apply_op.c
 
 CHECKER_SRC_DIR = ./srcs/checker/
 CHECKER_SRC = $(addprefix $(CHECKER_SRC_DIR), $(CHECKER_FILES))
@@ -40,7 +40,11 @@ LIB_DIR = ./libft/
 LIB = $(addprefix $(LIB_DIR), libft.a)
 LIB_INCLUDE = ./libft/includes/
 
-all: $(CHECKER)
+# all: $(CHECKER)
+all: $(PUSH_SWAP)
+
+$(PUSH_SWAP): $(PUSH_SWAP_OBJS) $(SHARED_OBJS) $(LIB)
+	@$(CC) -o $(PUSH_SWAP) $(FLAGS) $(PUSH_SWAP_OBJS) $(SHARED_OBJS) -L$(LIB_DIR) -lft
 
 $(CHECKER): $(CHECKER_OBJS) $(SHARED_OBJS) $(LIB)
 	@$(CC) -o $(CHECKER) $(FLAGS) $(CHECKER_OBJS) $(SHARED_OBJS) -L$(LIB_DIR) -lft
@@ -56,12 +60,16 @@ $(OBJS_DIR)%.o: $(SHARED_SRC_DIR)%.c
 	@mkdir -p $(OBJS_DIR)
 	@$(CC) $(FLAGS) -I$(INCLUDES_DIR) -I$(LIB_INCLUDE) -c $^ -o $@
 
+$(OBJS_DIR)%.o: $(PUSH_SWAP_SRC_DIR)%.c
+	@mkdir -p $(OBJS_DIR)
+	@$(CC) $(FLAGS) -I$(INCLUDES_DIR) -I$(LIB_INCLUDE) -c $^ -o $@
+
 clean:
 	@/bin/rm -rf $(OBJS_DIR)
 	@$(MAKE) -sC $(LIB_DIR) clean
 
 fclean: clean
 	@$(MAKE) -sC $(LIB_DIR) fclean
-	@/bin/rm -f $(CHECKER)
+	@/bin/rm -f $(CHECKER) $(PUSH_SWAP)
 
 re: fclean all

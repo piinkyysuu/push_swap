@@ -6,7 +6,7 @@
 /*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/23 14:42:24 by thule             #+#    #+#             */
-/*   Updated: 2022/07/05 13:22:17 by thule            ###   ########.fr       */
+/*   Updated: 2022/07/12 18:04:06 by thule            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,22 +27,3 @@
 #define MAGENTA "\x1B[35m"
 #define CYAN "\x1B[36m"
 #define WHITE "\x1B[37m"
-
-#define STACK_EMPTY LONG_MIN
-
-enum e_instructions
-{
-	sa,
-	ra,
-	rra,
-	sb,
-	rb,
-	rrb,
-	ss,
-	rr,
-	rrr,
-	pa,
-	pb
-};
-
-int solve_stack(t_stack *a, t_stack *b, void (*instruction[9])(t_stack **head));

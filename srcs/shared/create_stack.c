@@ -6,7 +6,7 @@
 /*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 16:10:33 by thule             #+#    #+#             */
-/*   Updated: 2022/07/01 16:15:18 by thule            ###   ########.fr       */
+/*   Updated: 2022/07/12 16:45:56 by thule            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,9 @@ int create_stack(int amount, char *array[], t_stack **head)
 {
 	size_t index;
 	long number;
+	int count;
 
+	count = 0;
 	index = 1;
 	if (!raw_form_check(array))
 		return (0);
@@ -121,6 +123,7 @@ int create_stack(int amount, char *array[], t_stack **head)
 					delete_stack(head);
 					return 0;
 				}
+				count++;
 			}
 			else
 			{
@@ -133,5 +136,5 @@ int create_stack(int amount, char *array[], t_stack **head)
 		}
 		index++;
 	}
-	return (1);
+	return (count);
 }
