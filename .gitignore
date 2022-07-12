@@ -4,6 +4,6 @@
 *.a
 checker
 !checker/
-pushswap
-!pushswap/
+push_swap
+!push_swap/
 .vscode
