@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
+/*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/06 11:40:01 by thule             #+#    #+#             */
-/*   Updated: 2022/07/25 16:39:49 by thule            ###   ########.fr       */
+/*   Updated: 2022/07/26 19:25:36 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ void get_stats(t_content *stack)
 {
 	t_stack *tmp;
 
+	stack->sum = 0;
 	stack->amount = 0;
 	tmp = stack->head;
 	if (!tmp)
@@ -196,130 +197,6 @@ void append_ops(t_op **head, char *op, t_stack **a, t_stack **b)
 		*head = new;
 }
 
-int find_less_than_mid(t_stack *head, int amount, int mid, int *pos)
-{
-	int least_pos = -1;
-	int most_pos = -1;
-	int index = 1;
-	while (head)
-	{
-		if (head->value < mid)
-		{
-			least_pos = index;
-			break;
-		}
-		index++;
-		head = head->next;
-	}
-	while (head)
-	{
-		if (head->value < mid)
-			most_pos = index;
-		index++;
-		head = head->next;
-	}
-	pos[0] = least_pos;
-	pos[1] = most_pos;
-	return 1;
-}
-
-void push_sort(t_op *op, t_content *b, t_stack **c)
-{
-	push(&(b->head), c);
-	// print_stack(*c, 'c');
-}
-
-void solve_stack_of_3(t_op **op, t_content *a)
-{
-	int first;
-	int second;
-	int last;
-
-	while (1)
-	{
-		first = (a->head)->value;
-		second = ((a->head)->next)->value;
-		last = ((a->head)->next->next)->value;
-		if (second > first && second > last)
-			append_ops(op, "rra", &(a->head), NULL);
-		else if (first > last && first > second)
-			append_ops(op, "ra", &(a->head), NULL);
-		else if (second < first)
-			append_ops(op, "sa", &(a->head), NULL);
-		else
-			break;
-	}
-}
-
-void smart_moves(t_op **op, int pos, t_content *a, t_content *b)
-{
-	get_stats(a);
-	printf("pos:%d amt:%d\n", pos, a->amount);
-	if (pos == 1)
-		append_ops(op, "pa", &(a->head), &(b->head));
-	else if (pos == 2)
-	{
-		append_ops(op, "pa", &(a->head), &(b->head));
-		append_ops(op, "sa", &(a->head), &(b->head));
-	}
-	else if (pos > a->amount)
-	{
-		append_ops(op, "pa", &(a->head), &(b->head));
-		append_ops(op, "ra", &(a->head), &(b->head));
-	}
-	else if (pos == a->amount - 1)
-	{
-		append_ops(op, "rra", &(a->head), &(b->head));
-		append_ops(op, "pa", &(a->head), &(b->head));
-		append_ops(op, "ra", &(a->head), &(b->head));
-		append_ops(op, "ra", &(a->head), &(b->head));
-	}
-	else if (pos > a->amount / 2)
-	{
-		printf("last if: %d\n", pos);
-		int amount = a->amount - pos + 1;
-
-		while (amount > 0)
-		{
-			append_ops(op, "rra", &(a->head), &(b->head));
-			amount--;
-		}
-		amount = a->amount - pos + 1;
-		append_ops(op, "pa", &(a->head), &(b->head));
-		while (amount + 1 > 0)
-		{
-			append_ops(op, "ra", &(a->head), &(b->head));
-			amount--;
-		}
-	}
-	print_2_stacks(a->head, b->head);
-}
-
-void solve_stack_of_5(t_op **op, t_content *a, t_content *b)
-{
-	int index;
-	t_stack *tmp;
-
-	index = 1;
-	append_ops(op, "pb", &(a->head), &(b->head));
-	append_ops(op, "pb", &(a->head), &(b->head));
-	print_2_stacks(a->head, b->head);
-	solve_stack_of_3(op, a);
-	tmp = a->head;
-	while (b->head && index < 20)
-	{
-		if (!tmp || tmp->value > (b->head)->value)
-		{
-			smart_moves(op, index, a, b);
-			index = 1;
-			tmp = a->head;
-			continue;
-		}
-		tmp = tmp->next;
-		index++;
-	}
-}
-
 // t_op *try_solve(t_content *a, t_content *b)
 // {
 // 	int index = 0;
@@ -379,6 +256,162 @@ void solve_stack_of_5(t_op **op, t_content *a, t_content *b)
 // 	return op;
 // }
 
+void best_to_top_a(int pos, t_op **op, t_stack **stack, int amount)
+{
+	if (pos == 1)
+		return ;
+	else if (pos == 2)
+		append_ops(op, "sa", stack, NULL);
+	else if (pos < (amount / 2) + 1)
+	{
+		while (amount > (pos++))
+			append_ops(op, "ra", stack, NULL);
+	}
+	else if (pos >= (amount / 2) + 1)
+	{
+		while (amount + 1 > (pos++))
+			append_ops(op, "rra", stack, NULL);
+	}
+}
+
+void best_to_top_b(int pos, t_op **op, t_stack **stack, int amount)
+{
+	if (pos == 1)
+		return ;
+	else if (pos == 2)
+		append_ops(op, "sb", NULL, stack);
+	else if (pos < (amount / 2) + 1)
+	{
+		while (amount > (pos++))
+			append_ops(op, "rb", NULL, stack);
+	}
+	else if (pos >= (amount / 2) + 1)
+	{
+		while (amount + 1 > (pos++))
+			append_ops(op, "rrb", NULL, stack);
+	}
+}
+
+void solve_stack_of_3(t_op **op, t_content *a)
+{
+	int first;
+	int second;
+	int last;
+
+	while (1)
+	{
+		first = (a->head)->value;
+		second = ((a->head)->next)->value;
+		last = ((a->head)->next->next)->value;
+		if (second > first && second > last)
+			append_ops(op, "rra", &(a->head), NULL);
+		else if (first > last && first > second)
+			append_ops(op, "ra", &(a->head), NULL);
+		else if (second < first)
+			append_ops(op, "sa", &(a->head), NULL);
+		else
+			break;
+	}
+}
+int find_pos_of_smallest(t_stack *head)
+{
+	t_stack *tmp;
+	int pos;
+	int smallest;
+	int smallest_pos;
+
+	tmp = head;
+	smallest = tmp->value;
+	pos = 1;
+	smallest_pos = pos;
+	if (!tmp)
+		return (0);
+	while (tmp)
+	{
+		if (tmp->value < smallest)
+		{
+			smallest = tmp->value;
+			smallest_pos = pos;
+		}
+		pos++;
+		tmp = tmp->next;
+	}
+	return (smallest_pos);
+}
+// right now: max: 11, avg: 9
+void solve_stack_of_5(t_op **op, t_content *a, t_content *b)
+{
+	int smallest_pos;
+
+	get_stats(a);
+	while (a->amount > 3)
+	{
+		smallest_pos = find_pos_of_smallest(a->head);
+		best_to_top_a(smallest_pos, op, &(a->head), a->amount);
+		append_ops(op, "pb", &(a->head), &(b->head));
+		get_stats(a);
+	}
+	solve_stack_of_3(op, a);
+	while (b->head)
+		append_ops(op, "pa", &(a->head), &(b->head));
+}
+
+void find_less_than_mid(t_stack *head, int amount, int mid, int *pos)
+{
+	int least_pos = -1;
+	int most_pos = -1;
+	int index = 1;
+	while (head)
+	{
+		if (head->value < mid)
+		{
+			least_pos = index;
+			break;
+		}
+		index++;
+		head = head->next;
+	}
+	while (head)
+	{
+		if (head->value < mid)
+			most_pos = index;
+		index++;
+		head = head->next;
+	}
+	pos[0] = least_pos;
+	pos[1] = most_pos;
+}
+
+void solve_stack_of_med(t_op **op, t_content *a, t_content *b)
+{
+	t_stack *hold = NULL;
+	int pos[2] = {-1, -1};
+	int chosen = 0;
+	int median;
+	
+
+	
+	while (a->amount > 5)
+	{
+		if (pos[0] == -1 && pos[1] == -1)
+		{
+			get_stats(a);
+			median = a->mid;
+			find_less_than_mid(a->head, a->amount, median, pos);
+		}
+		printf("%d %d %d\n", median, pos[0], pos[1]);
+		chosen = pos[1];
+		if (pos[0] < a->amount / 2)
+			chosen = pos[0];
+		printf("chosen:%d\n", chosen);
+		best_to_top_a(chosen, op, &(a->head), a->amount);
+		push(&hold, &(a->head));
+		print_2_stacks(a->head, hold);
+		(a->amount)--;
+		find_less_than_mid(a->head, a->amount, median, pos);
+	}
+}
+
 int main(int argc, char *argv[])
 {
 	int result = 0;
@@ -394,6 +427,14 @@ int main(int argc, char *argv[])
 		write(2, "Error\n", 6);
 	else
 	{
+		t_stack *temp;
+		temp = a.head;
+		while (temp)
+		{
+			printf("%d ", temp->value);
+			temp = temp->next;
+		}
+		printf("\n");
 		get_stats(&a);
 		print_stats(&a, 'a');
 		printf("%s--------------------%s%03d%s--------------------%s\n", YELLOW, MAGENTA, 0, YELLOW, WHITE);
@@ -401,20 +442,35 @@ int main(int argc, char *argv[])
 		printf("\n");
 		if (!is_stack_sorted(&(a.head)))
 		{
-			solve_stack_of_5(&op, &a, &b);
-			printf("%s", GREEN);
-			while (op)
+			if (a.amount == 5)
+				solve_stack_of_5(&op, &a, &b);
+			else if (a.amount == 3)
+				solve_stack_of_3(&op, &a);
+			else
 			{
-				printf("%s ", op->op);
-				op = op->next;
+				solve_stack_of_med(&op, &a, &b);
 			}
-			printf("%s\n", WHITE);
+			// printf("%s", GREEN);
+			// int count = 0;
+			// while (op)
+			// {
+			// 	printf("%s ", op->op);
+			// 	op = op->next;
+			// 	count++;
+			// }
+			// printf("%s%d%s \n", MAGENTA, count, WHITE);
+			// print_2_stacks(a.head, b.head);
+			// if (is_stack_sorted(&(a.head)) && (b.head == NULL))
+			// 	printf("%sSORTED\n", GREEN);
+			// else
+			// 	printf("%sNOT-SORTED\n", RED);
 		}
-		else
-			printf("sorted!");
+		// else
+		// 	printf("sorted!\n");
+		// printf("%s", WHITE);
 
-		print_2_stacks(a.head, b.head);
 
+		
 		// result = solve_stack(a, b);
 		// if (result == -1)
 		// {
@@ -429,5 +485,6 @@ int main(int argc, char *argv[])
 		// 	printf("%sSORTED\n", GREEN);
 		// }
 	}
+	exit(1);
 	return (0);
 }
