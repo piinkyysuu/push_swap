@@ -6,7 +6,7 @@
 /*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/23 14:39:09 by thule             #+#    #+#             */
-/*   Updated: 2022/07/12 18:19:07 by thule            ###   ########.fr       */
+/*   Updated: 2022/07/25 13:04:37 by thule            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ return -1 if the op is not correct
 return 0 if the stack is not sorted
 return 1 if the stack is sorted
 */
-static int solve_stack(t_stack *a, t_stack *b)
+static int read_then_apply_op(t_stack *a, t_stack *b)
 {
 	char *op;
 	int result;
@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
 		write(2, "Error\n", 6);
 	else
 	{
-		result = solve_stack(a, b);
+		result = read_then_apply_op(a, b);
 		if (result == -1)
 			write(2, "Error\n", 6);
 		else if (result == 0)

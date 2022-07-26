@@ -6,7 +6,7 @@
 /*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/12 17:54:51 by thule             #+#    #+#             */
-/*   Updated: 2022/07/12 17:58:34 by thule            ###   ########.fr       */
+/*   Updated: 2022/07/25 13:17:41 by thule            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ int apply_op(void (*op_array[9])(t_stack **head),
 		return (0);
 	return (1);
 }
-
 
 /* this function must be always called before proceeding to call apply_op() */
 void assign_index_for_op(void (*op_array[9])(t_stack **head))

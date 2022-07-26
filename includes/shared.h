@@ -6,13 +6,22 @@
 /*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 14:46:18 by thule             #+#    #+#             */
-/*   Updated: 2022/07/12 18:02:31 by thule            ###   ########.fr       */
+/*   Updated: 2022/07/15 18:54:39 by thule            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include "libft.h"
 #include <stdio.h> //rmb to delete
+
+#define NORMAL "\x1B[0m"
+#define RED "\x1B[31m"
+#define GREEN "\x1B[32m"
+#define YELLOW "\x1B[33m"
+#define BLUE "\x1B[34m"
+#define MAGENTA "\x1B[35m"
+#define CYAN "\x1B[36m"
+#define WHITE "\x1B[37m"
 
 typedef struct s_stack
 {

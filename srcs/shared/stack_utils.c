@@ -6,11 +6,12 @@
 /*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 15:55:23 by thule             #+#    #+#             */
-/*   Updated: 2022/07/12 18:01:00 by thule            ###   ########.fr       */
+/*   Updated: 2022/07/25 11:14:54 by thule            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shared.h"
+// #include "push_swap.h"
 
 int is_stack_sorted(t_stack **head)
 {
@@ -88,27 +89,29 @@ int count_stack(t_stack **head)
 
 void print_2_stacks(t_stack *a, t_stack *b)
 {
+	printf("%20s %s|%s %-15s\n", "Stack A", YELLOW, WHITE, "Stack B");
 	int a_len = count_stack(&a);
 	int b_len = count_stack(&b);
 	t_stack *t_a = a;
 	t_stack *t_b = b;
-	int max_len = a_len > b_len ? a_len : b_len;
-	while (max_len >= 0)
+	int index = 1;
+	while (a && b)
 	{
-		if (a_len > max_len)
-		{
-			printf("%d", a->value);
-			a = a->next;
-		}
-		if (b_len > max_len)
-		{
-			printf("			%d\n", b->value);
-			b = b->next;
-		}
-		else
-			printf("\n");
-		max_len--;
+		printf("[%3d]%15d %s|%s %-15d\n", index, a->value, YELLOW, WHITE, b->value);
+		a = a->next;
+		b = b->next;
+		index++;
 	}
-	printf("-			-\n");
-	printf("a			b\n");
+	while (a)
+	{
+		printf("[%3d]%15d %s|%s\n", index, a->value, YELLOW, WHITE);
+		a = a->next;
+		index++;
+	}
+	while (b)
+	{
+		printf("[%3d]%15s %s|%s %-15d\n", index, " ", YELLOW, WHITE, b->value);
+		b = b->next;
+		index++;
+	}
 }
