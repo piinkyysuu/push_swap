@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/06 11:40:01 by thule             #+#    #+#             */
-/*   Updated: 2022/07/27 19:32:45 by thle             ###   ########.fr       */
+/*   Updated: 2022/07/28 16:07:20 by thule            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,7 +174,7 @@ void print_ops(t_op *head)
 
 void append_ops(t_op **head, char *op, t_stack **a, t_stack **b)
 {
-	printf("%s\n", op);
+	// printf("%s\n", op);
 	t_op *tmp;
 	t_op *new;
 	void (*op_array[9])(t_stack **);
@@ -336,35 +336,42 @@ int is_best_place(t_content *content, int value)
 	int second;
 
 	get_stats(content);
-	// while (tmp && value < content->min)
-	// {
-	// 	if (tmp->next && tmp->value == content->min && tmp->value < (tmp->next)->value)
-	// 		return (pos + 1);
-	// 	else if (tmp->value == content->min)
-	// 		return (pos);
-	// 	pos++;
-	// 	tmp = tmp->next;
-	// }
-	// while (tmp && value > content->max)
-	// {
-	// 	if (tmp->value == content->max)
-	// 		return (pos);
-	// 	pos++;
-	// 	tmp = tmp->next;
-	// }
+	if (content->amount == 0)
+		return (1);
+	if (value < content-> min || value > content->max)
+	{
+		printf("min or max\n");
+		value = content->min;
+		if (value > content->max)
+			value = content->max;
+		while (tmp)
+		{
+			if (value == tmp->value)
+			{
+				if (value == content->min)
+					return ((pos + 1));
+				return ((pos - 1));
+			}
+			pos++;
+			tmp = tmp->next;
+		}
+	}
 	while (tmp->next)
 	{
 		first = tmp->value;
 		second = (tmp->next)->value;
-		printf("[f:%d|s:%d|pos:%d] ", first, second, pos);
-		if (value > first && value < second)
-			return (pos + 1);
-		else if (value < first && value > second)
-			return (pos + 1);
+		printf("[f:%d|s:%d|pos:%d]\n", first, second, pos);
+		if (first != content->min && second != content->max)
+		{
+			if (first < second && value > first && value < second)
+				return (pos);
+			if (first > second && value < first && value > second)
+				return (pos + 1);
+		}
 		pos++;
 		tmp = tmp->next;
 	}
-	return (pos + 1);
+	return (1);
 }
 
 void solve_stack_of_med(t_op **op, t_content *a, t_content *b)
@@ -404,46 +411,25 @@ void solve_stack_of_med(t_op **op, t_content *a, t_content *b)
 
 void test(t_op **op, t_content *a, t_content *b)
 {
-	append_ops(op, "pb", &(a->head), &(b->head));
 	print_2_stacks(a->head, b->head);
-	while (a->head)
+	char *line = NULL;
+	while (get_next_line(0, &line) && a->head)
 	{
-		int pos = is_best_place(b, (a->head)->value);
-		get_stats(b);
-		printf("\npos: %d\n", pos);
-
-		if (pos == 1 || pos == 2)
+		int pos = is_best_place(b,(a->head)->value);
+		if (ft_strcmp(line, "pb"))
 		{
-			append_ops(op, "pb", &(a->head), &(b->head));
-			if (pos == 2)
-				append_ops(op, "sb", &(a->head), &(b->head));
+			append_ops(op, line, &(a->head), &(b->head));
+			print_2_stacks(a->head, b->head);
 		}
-		else if (pos == b->amount + 1)
+		else
 		{
-			append_ops(op, "pb", &(a->head), &(b->head));
-			append_ops(op, "rb", &(a->head), &(b->head));
+			append_ops(op, line, &(a->head), &(b->head));
+			pos = is_best_place(b,(a->head)->value);
+			printf("pos: %d\n\n", pos);
+			print_2_stacks(a->head, b->head);
 		}
-		else if (pos == b->amount)
-		{
-			append_ops(op, "pb", &(a->head), &(b->head));
-			// append_ops(op, "rb", &(a->head), &(b->head));
-		}
-		else if (pos < (b->amount / 2) + 1)
-		{
-			while ((pos--) - 1)
-				append_ops(op, "rb", NULL, &(b->head));
-			append_ops(op, "pb", &(a->head), &(b->head));
-		}
-		else if (pos >= (b->amount / 2) + 1)
-		{
-			while (b->amount + 1 > (pos++))
-				append_ops(op, "rrb", NULL, &(b->head));
-			append_ops(op, "pb", &(a->head), &(b->head));
-		}
-		printf("--------------start--------------\n");
-		print_2_stacks(a->head, b->head);
 	}
-	
+	printf("end of get_next_line\n");
 }
 
 int main(int argc, char *argv[])
@@ -482,21 +468,24 @@ int main(int argc, char *argv[])
 				solve_stack_of_3(&op, &a);
 			else
 			{
+				// append_ops(&op, "pb", &(a.head), &(b.head));
+				// append_ops(&op, "pb", &(a.head), &(b.head));
+				// append_ops(&op, "pb", &(a.head), &(b.head));
+				// print_2_stacks(a.head, b.head);
 				test(&op, &a, &b);
 				// solve_stack_of_med(&op, &a, &b);
-				// append_ops(&op, "pb", &(a.head), &(b.head));
 				printf("%s--------------------%sFINAL%s--------------------%s\n", YELLOW, MAGENTA, YELLOW, WHITE);
 				print_2_stacks(a.head, b.head);
 			}
-			printf("%s", GREEN);
-			int count = 0;
-			while (op)
-			{
-				printf("%s ", op->op);
-				op = op->next;
-				count++;
-			}
-			printf("%s%d%s \n", MAGENTA, count, WHITE);
+			// printf("%s", GREEN);
+			// int count = 0;
+			// while (op)
+			// {
+			// 	printf("%s ", op->op);
+			// 	op = op->next;
+			// 	count++;
+			// }
+			// printf("%s%d%s \n", MAGENTA, count, WHITE);
 			// print_2_stacks(a.head, b.head);
 			// if (is_stack_sorted(&(a.head)) && (b.head == NULL))
 			// 	printf("%sSORTED\n", GREEN);
