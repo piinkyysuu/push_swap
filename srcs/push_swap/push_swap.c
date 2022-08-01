@@ -6,7 +6,7 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/06 11:40:01 by thule             #+#    #+#             */
-/*   Updated: 2022/08/01 13:14:14 by thle             ###   ########.fr       */
+/*   Updated: 2022/08/01 16:15:10 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,7 +174,7 @@ void print_ops(t_op *head)
 
 void append_ops(t_op **head, char *op, t_stack **a, t_stack **b)
 {
-	// printf("%s%s%s\n", GREEN, op, WHITE);
+	printf("%s%s%s\n", GREEN, op, WHITE);
 	t_op *tmp;
 	t_op *new;
 	void (*op_array[9])(t_stack **);
@@ -375,6 +375,90 @@ int find_range_position(t_content *content, int value)
 	return (1);
 }
 
+void push_to_range(t_op **op, t_content *a, t_content *b)
+{
+	int pos;
+
+	get_stats(b);
+	if (b->amount < 3)
+	{
+		if (b->amount == 0 || (b->head)->value < (a->head)->value)
+			append_ops(op, "pb", &(a->head), &(b->head));
+		else if (b->amount == 1)
+		{
+			append_ops(op, "pb", &(a->head), &(b->head));
+			if ((b->head)->value < (b->head->next)->value)
+				append_ops(op, "sb", &(a->head), &(b->head));
+		}
+		else
+		{
+			if ((a->head)->value < (b->head->next)->value)
+			{
+				append_ops(op, "pb", &(a->head), &(b->head));
+				append_ops(op, "rb", &(a->head), &(b->head));
+			}
+			else
+			{
+				append_ops(op, "pb", &(a->head), &(b->head));
+				append_ops(op, "sb", &(a->head), &(b->head));
+			}
+		}
+		return ;
+	}
+	pos = find_range_position(b, (a->head)->value);
+	if (pos == 1 || pos == 0 || pos == b->amount + 1)
+		append_ops(op, "pb", &(a->head), &(b->head));
+	else if (pos < ((b->amount / 2) + 1))
+	{
+		while (pos - 1)
+		{
+			append_ops(op, "rb", &(a->head), &(b->head));
+			pos--;
+		}
+		append_ops(op, "pb", &(a->head), &(b->head));
+	}
+	else if (pos >= ((b->amount / 2) + 1))
+	{
+		while ((b->amount - pos) + 1)
+		{
+			append_ops(op, "rrb", &(a->head), &(b->head));
+			pos++;
+		}
+		append_ops(op, "pb", &(a->head), &(b->head));
+	}
+	
+}
+
+void bring_max_to_top(t_op **op, t_content *b)
+{
+	get_stats(b);
+	t_stack *tmp = b->head;
+	int pos = 1;
+	while (tmp)
+	{
+		if (tmp->value == b->max)
+			break;
+		pos++;
+		tmp = tmp->next;
+	}
+	if (pos > b->amount / 2)
+	{
+		while ((b->amount - pos) + 1)
+		{
+			append_ops(op, "rrb", NULL, &(b->head));
+			pos++;
+		}
+	}
+	else
+	{
+		while (pos - 1)
+		{
+			append_ops(op, "rb", NULL, &(b->head));
+			pos--;
+		}
+	}
+}
+
 void solve_stack_of_med(t_op **op, t_content *a, t_content *b)
 {
 	t_stack *hold = NULL;
@@ -390,80 +474,45 @@ void solve_stack_of_med(t_op **op, t_content *a, t_content *b)
 			median = a->mid;
 			find_less_than_mid(a->head, a->amount, median, pos);
 		}
-		// printf("%d %d %d\n", median, pos[0], pos[1]);
 		chosen = pos[1];
 		if (pos[0] < a->amount / 2)
 			chosen = pos[0];
 		best_to_top_a(chosen, op, &(a->head), a->amount);
-
-		// get_stats(b);
-		// best_to_top_b(find_fitting_pos(b->head, (a->head)->value), op, &(b->head), b->amount);
-
-		append_ops(op, "pb", &(a->head), &(b->head));
-
-		print_2_stacks(a->head, b->head);
-		printf("\n");
+		push_to_range(op, a ,b);
 
 		(a->amount)--;
 		find_less_than_mid(a->head, a->amount, median, pos);
 	}
+	bring_max_to_top(op, b);
 	solve_stack_of_5(op, a, b);
-}
 
-void test(t_op **op, t_content *a, t_content *b)
-{
-	int pos;
+	print_2_stacks(a->head, b->head);
+	
+	t_stack *tmp;
 
-	while (a->head)
+	
+	while (b->head)
 	{
-		pos = find_range_position(b, (a->head)->value);
-		if (pos == 1 || pos == 0 || pos == b->amount + 1)
-			append_ops(op, "pb", &(a->head), &(b->head));
-		else if (pos < ((b->amount / 2) + 1))
+		get_stats(a);
+		tmp = a->head;
+		if ((b->head)->value > a->max)
 		{
-			while (pos - 1)
-			{
-				append_ops(op, "rb", &(a->head), &(b->head));
-				pos--;
-			}
-			append_ops(op, "pb", &(a->head), &(b->head));
+			append_ops(op, "pa", &(a->head), &(b->head));
+			append_ops(op, "ra", &(a->head), &(b->head));
+			continue;
 		}
-		else if (pos >= ((b->amount / 2) + 1))
+		while (tmp->next)
+			tmp = tmp->next;
+		if (tmp->value < a->head->value && tmp->value > (b->head)->value)
 		{
-			while ((b->amount - pos) + 1)
-			{
-				append_ops(op, "rrb", &(a->head), &(b->head));
-				pos++;
-			}
-			append_ops(op, "pb", &(a->head), &(b->head));
+			append_ops(op, "rra", &(a->head), &(b->head));
+			continue;
 		}
-	}
-
-	get_stats(b);
-	t_stack *tmp = b->head;
-	pos = 1;
-	while (tmp)
-	{
-		if (tmp->value == b->max)
-			break;
-		pos++;
-		tmp = tmp->next;
-	}
-	if (pos > b->amount / 2)
-	{
-		while ((b->amount - pos) + 1)
-		{
-			append_ops(op, "rrb", &(a->head), &(b->head));
-			pos++;
-		}
-	}
-	else
-	{
-		while (pos - 1)
-		{
-			append_ops(op, "rb", &(a->head), &(b->head));
-			pos--;
-		}
+		while (a->head && a->head->value < b->head->value)
+			append_ops(op, "ra", &(a->head), &(b->head));
+		append_ops(op, "pa", &(a->head), &(b->head));
+		
+		print_2_stacks(a->head, b->head);
 	}
 }
 
@@ -490,12 +539,11 @@ int main(int argc, char *argv[])
 			printf("%d ", temp->value);
 			temp = temp->next;
 		}
-		// printf("\n");
+		printf("\n");
 		get_stats(&a);
 		// print_stats(&a, 'a');
 		// printf("%s--------------------%s%03d%s--------------------%s\n", YELLOW, MAGENTA, 0, YELLOW, WHITE);
 		// print_2_stacks(a.head, b.head);
-		printf("\n");
 		if (!is_stack_sorted(&(a.head)))
 		{
 			if (a.amount == 5)
@@ -504,66 +552,66 @@ int main(int argc, char *argv[])
 				solve_stack_of_3(&op, &a);
 			else
 			{
-				if ((a.head)->value > (a.head->next)->value)
-					append_ops(&op, "sa", &(a.head), &(b.head));
-				append_ops(&op, "pb", &(a.head), &(b.head));
-				append_ops(&op, "pb", &(a.head), &(b.head));
-				int f = (b.head)->value;
-				int s = (b.head->next)->value;
-				if ((a.head)->value > f)
-					append_ops(&op, "pb", &(a.head), &(b.head));
-				else if ((a.head)->value < s)
-				{
-					append_ops(&op, "pb", &(a.head), &(b.head));
-					append_ops(&op, "rb", &(a.head), &(b.head));
-				}
-				else
-				{
-					append_ops(&op, "pb", &(a.head), &(b.head));
-					append_ops(&op, "sb", &(a.head), &(b.head));
-				}
+				// if ((a.head)->value > (a.head->next)->value)
+				// 	append_ops(&op, "sa", &(a.head), &(b.head));
+				// append_ops(&op, "pb", &(a.head), &(b.head));
+				// append_ops(&op, "pb", &(a.head), &(b.head));
+				// int f = (b.head)->value;
+				// int s = (b.head->next)->value;
+				// if ((a.head)->value > f)
+				// 	append_ops(&op, "pb", &(a.head), &(b.head));
+				// else if ((a.head)->value < s)
+				// {
+				// 	append_ops(&op, "pb", &(a.head), &(b.head));
+				// 	append_ops(&op, "rb", &(a.head), &(b.head));
+				// }
+				// else
+				// {
+				// 	append_ops(&op, "pb", &(a.head), &(b.head));
+				// 	append_ops(&op, "sb", &(a.head), &(b.head));
+				// }
 				// print_2_stacks(a.head, b.head);
 
 				// printf("-------------------calling test-------------------\n");
-				test(&op, &a, &b);
-				// solve_stack_of_med(&op, &a, &b);
-				// printf("%s--------------------%sFINAL%s--------------------%s\n", YELLOW, MAGENTA, YELLOW, WHITE);
-				
+				// test(&op, &a, &b);
+				solve_stack_of_med(&op, &a, &b);
+				printf("%s--------------------%sFINAL%s--------------------%s\n", YELLOW, MAGENTA, YELLOW, WHITE);
+
 				// for (int i = 0; i < 20; i++)
 				// {
 				// 	append_ops(&op, "pb", &(a.head), &(b.head));
 				// }
-				
-				temp = (b.head)->next;
-				int val = (b.head)->value;
-				while (temp)
-				{
-					if (val < temp->value)
-					{
-						printf("%sERROR%s\n", RED, WHITE);
-						print_2_stacks(a.head, b.head);
-						exit(1);
-					}
-					val = temp->value;
-					temp = temp->next;
-				}
-				printf("%sSORTED%s\n", GREEN, WHITE);
+
+				// temp = (b.head)->next;
+				// int val = (b.head)->value;
+				// while (temp)
+				// {
+				// 	if (val < temp->value)
+				// 	{
+				// 		printf("%sERROR%s\n", RED, WHITE);
+				// 		print_2_stacks(a.head, b.head);
+				// 		exit(1);
+				// 	}
+				// 	val = temp->value;
+				// 	temp = temp->next;
+				// }
+				// printf("%sSORTED%s\n", GREEN, WHITE);
 				print_2_stacks(a.head, b.head);
 			}
 			// printf("%s", GREEN);
-			// int count = 0;
-			// while (op)
-			// {
-			// 	printf("%s ", op->op);
-			// 	op = op->next;
-			// 	count++;
-			// }
-			// printf("%s%d%s \n", MAGENTA, count, WHITE);
+			int count = 0;
+			while (op)
+			{
+				// printf("%s ", op->op);
+				op = op->next;
+				count++;
+			}
+			printf("%s%d%s \n", MAGENTA, count, WHITE);
 			// print_2_stacks(a.head, b.head);
-			// if (is_stack_sorted(&(a.head)) && (b.head == NULL))
-			// 	printf("%sSORTED\n", GREEN);
-			// else
-			// 	printf("%sNOT-SORTED\n", RED);
+			if (is_stack_sorted(&(a.head)) && (b.head == NULL))
+				printf("%sSORTED\n", GREEN);
+			else
+				printf("%sNOT-SORTED\n", RED);
 		}
 		// else
 		// 	printf("sorted!\n");
