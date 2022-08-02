@@ -36,6 +36,6 @@ function swap($a, $i, $j)
 }
 
 // Driver Code 
-$str = "123";
+$str = "12356789";
 $n = strlen($str);
 permute($str, 0, $n - 1, $n);

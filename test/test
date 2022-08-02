@@ -34,3 +34,7 @@ pa
 	4 1 3 2 5 (sa pb rra rra pb ra sa pa pa 9)
 	5 4 1 3 2 (rra rra rra pb sa pb rra sa pa pa 10)
 	3 6 1 5 4 (rra rra rra pb rra rra pb ra sa pa pa 11)
+
+
+works:
+  ./push_swap 5 8 3 2 7 0 4 6
