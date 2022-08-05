@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: thule <thule@student.42.fr>                +#+  +:+       +#+         #
+#    By: thle <thle@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/23 14:12:18 by thule             #+#    #+#              #
-#    Updated: 2022/07/12 18:05:24 by thule            ###   ########.fr        #
+#    Updated: 2022/08/02 14:21:20 by thle             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ PUSH_SWAP = push_swap
 INCLUDES_DIR = ./includes/
 
 CHECKER_FILES = checker.c
-PUSH_SWAP_FILES = push_swap.c
+PUSH_SWAP_FILES = push_swap_v2.c
 SHARED_FILES = operations.c stack_utils.c create_stack.c apply_op.c
 
 CHECKER_SRC_DIR = ./srcs/checker/
@@ -35,6 +35,11 @@ CHECKER_OBJS = $(addprefix $(OBJS_DIR), $(CHECKER_FILES:%.c=%.o))
 PUSH_SWAP_OBJS = $(addprefix $(OBJS_DIR), $(PUSH_SWAP_FILES:%.c=%.o))
 SHARED_OBJS = $(addprefix $(OBJS_DIR), $(SHARED_FILES:%.c=%.o))
 
+#this testing needs removing
+TESTING_FILES = testing.c
+TESTING_SRC = $(addprefix $(PUSH_SWAP_SRC_DIR), $(TESTING_FILES))
+TESTING_OBJS = $(addprefix $(OBJS_DIR), $(TESTING_FILES:%.c=%.o))
+
 
 LIB_DIR = ./libft/
 LIB = $(addprefix $(LIB_DIR), libft.a)
@@ -42,6 +47,10 @@ LIB_INCLUDE = ./libft/includes/
 
 # all: $(CHECKER)
 all: $(PUSH_SWAP)
+
+#this testing needs removing
+testing: $(TESTING_OBJS) $(SHARED_OBJS) $(LIB)
+	@$(CC) -o testing $(FLAGS) $(TESTING_OBJS) $(SHARED_OBJS) -L$(LIB_DIR) -lft
 
 $(PUSH_SWAP): $(PUSH_SWAP_OBJS) $(SHARED_OBJS) $(LIB)
 	@$(CC) -o $(PUSH_SWAP) $(FLAGS) $(PUSH_SWAP_OBJS) $(SHARED_OBJS) -L$(LIB_DIR) -lft
