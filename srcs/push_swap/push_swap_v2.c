@@ -6,7 +6,7 @@
 /*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 13:28:16 by thle              #+#    #+#             */
-/*   Updated: 2022/08/10 13:13:45 by thule            ###   ########.fr       */
+/*   Updated: 2022/08/10 13:44:17 by thule            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,6 +138,15 @@ void rotate_to_bottom(t_op **op, t_info *stack, int pos)
 {
 	int stack_size = get_size(stack->head);
 
+	if (pos < stack_size / 2)
+	{
+		while (pos > 0)
+		{
+			append_ops(op, "ra", &(stack->head), NULL);
+			pos--;
+		}
+		return ;
+	}
 	while (pos > 0 && pos++ < stack_size)
 	{
 		append_ops(op, "rra", &(stack->head), NULL);
@@ -334,6 +343,11 @@ int main(int argc, char *argv[])
 		merge(&op, &a, &b);
 		printf("\n");
 		print_2_stacks(a.head, b.head);
+
+		if (is_stack_sorted(&(a.head)))
+			printf("%ssorted %s\n", GREEN, WHITE);
+		else
+			printf("%snot sorted %s\n", RED, WHITE);
 		while (op)
 		{
 			pos++;
