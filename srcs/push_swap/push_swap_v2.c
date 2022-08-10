@@ -6,7 +6,7 @@
 /*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 13:28:16 by thle              #+#    #+#             */
-/*   Updated: 2022/08/10 13:44:17 by thule            ###   ########.fr       */
+/*   Updated: 2022/08/10 17:45:27 by thule            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 #define DESC 1
 
 #define EMPTY LONG_MIN
+
+int global_count = 1;
 
 typedef struct s_op
 {
@@ -66,6 +68,7 @@ void push_to_b(t_op **op, t_info *a, t_info *b, int amount)
 void update_info(t_info *stack)
 {
 	int pos = 1;
+	int hold = 0;
 	t_stack *tmp = stack->head;
 
 	if (stack->name == 'b')
@@ -76,12 +79,22 @@ void update_info(t_info *stack)
 		return;
 	}
 	stack->sorted_start = tmp->value;
-	while (tmp && pos < stack->sorted_amount)
+	hold = tmp->value;
+	stack->sorted_amount = 0;
+	while (tmp)
 	{
+		if (hold > tmp->value)
+		{
+			stack->sorted_end = hold;
+			return ;
+		}
+		stack->sorted_amount += 1;
+		hold = tmp->value;
 		tmp = tmp->next;
 		pos++;
 	}
-	stack->sorted_end = tmp->value;
+	stack->sorted_end = hold;
+	
 }
 
 int get_pos(t_stack *stack, int value)
@@ -160,16 +173,16 @@ void merge_to_b(t_op **op, t_info *a, t_info *b, int amount)
 	{
 		while (amount > 0 && b->sorted_amount > 0)
 		{
-			printf("a_first: %ld, b_last: %ld\n", get_first(a->head), get_last(b->head));
+			// printf("a_first: %ld, b_last: %ld\n", get_first(a->head), get_last(b->head));
 			if (get_first(a->head) > get_last(b->head))
 			{
-				printf("get_first(a->head) > get_last(b->head)\n");
+				// printf("get_first(a->head) > get_last(b->head)\n");
 				append_ops(op, "rrb", &(a->head), &(b->head));
 				b->sorted_amount--;
 			}
 			else
 			{
-				printf("else\n");
+				// printf("else\n");
 				append_ops(op, "pb", &(a->head), &(b->head));
 				amount--;
 			}
@@ -185,7 +198,7 @@ void merge_to_b(t_op **op, t_info *a, t_info *b, int amount)
 		solve_b_max_3(op, &(b->head));
 	}
 	update_info(b);
-	printf("end\n");
+	// printf("end\n");
 }
 
 void merge_to_a(t_op **op, t_info *a, t_info *b)
@@ -286,13 +299,13 @@ void merge(t_op **op, t_info *a, t_info *b)
 			remainder = a_size - a->sorted_amount - get_size(b->head);
 			if (remainder <= 0)
 			{
-				printf("%sbreak%s\n", RED, WHITE);
+				// printf("%sbreak%s\n", RED, WHITE);
 				break;
 			}
 			else if (remainder > 3)
 				remainder = 3;
 			int rotate = remainder;
-			printf("remainder: %d\n", remainder);
+			// printf("remainder: %d\n", remainder);
 			while (rotate-- > 0)
 				append_ops(op, "rra", &(a->head), &(b->head));
 			print_2_stacks(a->head, b->head);
@@ -304,7 +317,7 @@ void merge(t_op **op, t_info *a, t_info *b)
 			else
 			{
 				solve_top_a(op, a, b, remainder);
-				printf("%ssolve_top_a%s\n", MAGENTA, WHITE);
+				// printf("%ssolve_top_a%s\n", MAGENTA, WHITE);
 				print_2_stacks(a->head, b->head);
 				merge_to_b(op, a, b, remainder);
 			}
@@ -338,22 +351,25 @@ int main(int argc, char *argv[])
 	{
 		printf("amount: %d\n", amount);
 		print_intial_a(a.head);
-
+		global_count = 1;
 		print_2_stacks(a.head, b.head);
 		merge(&op, &a, &b);
 		printf("\n");
-		print_2_stacks(a.head, b.head);
+		// print_2_stacks(a.head, b.head);
 
 		if (is_stack_sorted(&(a.head)))
 			printf("%ssorted %s\n", GREEN, WHITE);
 		else
 			printf("%snot sorted %s\n", RED, WHITE);
-		while (op)
-		{
-			pos++;
-			op = op->next;
-		}
-		printf("pos: %d\n", pos);
+		
+		// while (op)
+		// {
+		// 	pos++;
+		// 	op = op->next;
+		// }
+		printf("pos: %d\n", global_count);
+
+		
 	}
 	return (1);
 }
@@ -517,7 +533,8 @@ void solve_a_max_3(t_op **op, t_stack **stack)
 
 void append_ops(t_op **head, char *op, t_stack **a, t_stack **b)
 {
-	printf("%s\n", op);
+	printf("%s%d%s: %s\n", BLUE, global_count, WHITE, op);
+	global_count++;
 	t_op *tmp;
 	t_op *new;
 	void (*op_array[9])(t_stack **);
