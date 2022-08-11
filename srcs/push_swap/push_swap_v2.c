@@ -6,7 +6,7 @@
 /*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 13:28:16 by thle              #+#    #+#             */
-/*   Updated: 2022/08/10 17:45:27 by thule            ###   ########.fr       */
+/*   Updated: 2022/08/11 15:28:56 by thule            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ typedef struct s_info
 	int sorted_amount;
 } t_info;
 
+int is_sorted(t_stack *stack, int order);
 int get_size(t_stack *stack);
 long get_first(t_stack *stack);
 long get_last(t_stack *stack);
@@ -94,7 +95,6 @@ void update_info(t_info *stack)
 		pos++;
 	}
 	stack->sorted_end = hold;
-	
 }
 
 int get_pos(t_stack *stack, int value)
@@ -117,7 +117,7 @@ void rotate_to_top(t_op **op, t_info *stack, int pos)
 	int stack_size;
 
 	stack_size = get_size(stack->head);
-	if (pos == stack_size + 1)
+	if (pos == stack_size + 1 || pos == 0)
 		return;
 	if (stack->name == 'b')
 	{
@@ -168,7 +168,7 @@ void rotate_to_bottom(t_op **op, t_info *stack, int pos)
 
 void merge_to_b(t_op **op, t_info *a, t_info *b, int amount)
 {
-	printf("amount = %d\n", amount);
+	// printf("amount = %d\n", amount);
 	if (b->sorted_amount > 0)
 	{
 		while (amount > 0 && b->sorted_amount > 0)
@@ -292,10 +292,10 @@ void merge(t_op **op, t_info *a, t_info *b)
 
 	while (a->sorted_amount < a_size)
 	{
-		printf("%soutter loop%s\n", GREEN, WHITE);
+		// printf("%soutter loop%s\n", GREEN, WHITE);
 		while (b->sorted_amount < a->sorted_amount && a->sorted_amount != get_size(a->head))
 		{
-			printf("%sinner loop%s\n", RED, WHITE);
+			// printf("%sinner loop%s\n", RED, WHITE);
 			remainder = a_size - a->sorted_amount - get_size(b->head);
 			if (remainder <= 0)
 			{
@@ -308,7 +308,7 @@ void merge(t_op **op, t_info *a, t_info *b)
 			// printf("remainder: %d\n", remainder);
 			while (rotate-- > 0)
 				append_ops(op, "rra", &(a->head), &(b->head));
-			print_2_stacks(a->head, b->head);
+			// print_2_stacks(a->head, b->head);
 			if (!(b->head))
 			{
 				merge_to_b(op, a, b, remainder);
@@ -318,20 +318,86 @@ void merge(t_op **op, t_info *a, t_info *b)
 			{
 				solve_top_a(op, a, b, remainder);
 				// printf("%ssolve_top_a%s\n", MAGENTA, WHITE);
-				print_2_stacks(a->head, b->head);
+				// print_2_stacks(a->head, b->head);
 				merge_to_b(op, a, b, remainder);
 			}
-			print_2_stacks(a->head, b->head);
+			// print_2_stacks(a->head, b->head);
 		}
 		if (a->sorted_amount != get_size(a->head))
 		{
 			rotate_to_bottom(op, a, get_pos(a->head, a->sorted_end));
 		}
-		print_2_stacks(a->head, b->head);
+		// print_2_stacks(a->head, b->head);
 		merge_to_a(op, a, b);
-		print_2_stacks(a->head, b->head);
+		// print_2_stacks(a->head, b->head);
 	}
 }
+
+int smaller_value(t_info *stack, int value)
+{
+	int hold;
+	t_stack *tmp;
+
+	hold = stack->sorted_end;
+	tmp = stack->head;
+	while (tmp)
+	{
+		if (tmp->value < value)
+		{
+			if (tmp->value > hold)
+				hold = tmp->value;
+		}
+		tmp = tmp->next;
+	}
+	return hold;
+}
+
+void merge_to_b_test(t_op **op, t_info *a, t_info *b, int amount)
+{
+	update_info(b);
+	while (amount > 0)
+	{
+		if ((a->head)->value < b->sorted_end || (a->head)->value > b->sorted_start)
+			rotate_to_top(op, b, get_pos(b->head, b->sorted_start));
+		else
+			rotate_to_top(op, b, get_pos(b->head, smaller_value(b, a->head->value)));
+		append_ops(op, "pb", &(a->head), &(b->head));
+		update_info(b);
+		amount--;
+	}
+	rotate_to_top(op, b, get_pos(b->head, b->sorted_start));
+}
+
+void merge_to_a_test(t_op **op, t_info *a, t_info *b)
+{
+	int final_start;
+	int final_end;
+	
+	update_info(a);
+	update_info(b);
+	final_start = a->sorted_start;
+	final_end = a->sorted_end;
+	if (final_start > b->sorted_end)
+		final_start = b->sorted_end;
+	if (final_end < b->sorted_start)
+		final_end = b->sorted_start;
+
+	if (b->sorted_start < a->sorted_start)
+	{
+		while (b->sorted_amount > 0)
+		{
+			append_ops(op, "pa", &(a->head), &(b->head));
+			b->sorted_amount--;
+		}
+	}
+
+	print_info(a);
+	print_info(b);
+	printf("start:%d end:%d\n", final_start, final_end);
+}
+
+
+
 
 int main(int argc, char *argv[])
 {
@@ -349,32 +415,71 @@ int main(int argc, char *argv[])
 		write(2, "Error\n", 6);
 	else
 	{
-		printf("amount: %d\n", amount);
+		// // printf("amount: %d\n", amount);
 		print_intial_a(a.head);
-		global_count = 1;
-		print_2_stacks(a.head, b.head);
-		merge(&op, &a, &b);
-		printf("\n");
+		// global_count = 1;
 		// print_2_stacks(a.head, b.head);
+		// merge(&op, &a, &b);
+		// // printf("\n");
+		// // print_2_stacks(a.head, b.head);
 
-		if (is_stack_sorted(&(a.head)))
-			printf("%ssorted %s\n", GREEN, WHITE);
-		else
-			printf("%snot sorted %s\n", RED, WHITE);
+		// if (is_stack_sorted(&(a.head)))
+		// 	printf("%ssorted %s\n", GREEN, WHITE);
+		// else
+		// 	printf("%snot sorted %s\n", RED, WHITE);
 		
-		// while (op)
-		// {
-		// 	pos++;
-		// 	op = op->next;
-		// }
-		printf("pos: %d\n", global_count);
+		// printf("pos: %d\n", global_count - 1);
 
+
+		append_ops(&op, "pb", &(a.head), &(b.head));
+		append_ops(&op, "pb", &(a.head), &(b.head));
+		append_ops(&op, "pb", &(a.head), &(b.head));
+		solve_top_a(&op, &a, &b, 3);
+		solve_b_max_3(&op, &(b.head));
+		
+		// append_ops(&op, "pb", &(a.head), &(b.head));
+		// append_ops(&op, "pb", &(a.head), &(b.head));
+		// append_ops(&op, "pb", &(a.head), &(b.head));
+		
+		
+		print_2_stacks(a.head, b.head);
+		
+		merge_to_a_test(&op, &a, &b);
+
+		print_2_stacks(a.head, b.head);
+		// print_2_stacks(a.head, b.head);
+		// if (is_sorted(b.head, DESC))
+		// 	printf("%sSORTED%s\n", GREEN, WHITE);
+		// else
+		// 	printf("%sNOT SORTED%s\n", RED, WHITE);
+		
 		
 	}
+	exit(1);
 	return (1);
 }
 
 /* later use */
+
+int is_sorted(t_stack *stack, int order)
+{
+	int value;
+
+	if (!stack)
+		return (1);
+	value = stack->value;
+	while (stack)
+	{
+		if (value < stack->value && order == DESC)
+			return (0);
+		else if (value > stack->value && order == ASC)
+			return (0);
+		value = stack->value;
+		stack = stack->next;
+	}
+	return (1);
+}
+
 int get_size(t_stack *stack)
 {
 	t_stack *tmp;
@@ -533,7 +638,7 @@ void solve_a_max_3(t_op **op, t_stack **stack)
 
 void append_ops(t_op **head, char *op, t_stack **a, t_stack **b)
 {
-	printf("%s%d%s: %s\n", BLUE, global_count, WHITE, op);
+	printf("%s%d: %s%s%s\n", BLUE, global_count, YELLOW, op, WHITE);
 	global_count++;
 	t_op *tmp;
 	t_op *new;
