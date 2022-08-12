@@ -6,7 +6,7 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 13:28:16 by thle              #+#    #+#             */
-/*   Updated: 2022/08/12 16:26:35 by thle             ###   ########.fr       */
+/*   Updated: 2022/08/12 16:53:21 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -436,31 +436,42 @@ int bigger_value(t_stack *stack, int value)
 void merge_to_a_test(t_op **op, t_info *a, t_info *b)
 {
 	t_stack *tmp_hold = NULL;
-	int hold;
 
 	update_info(a);
 	update_info(b);
 	tmp_hold = copy_stack(a->head, a->sorted_amount);
 	while (b->sorted_amount > 0)
 	{
-		hold = b->head->value;
-		if (hold > a->sorted_end)
+		if (b->head->value > a->sorted_end)
 		{
 			rotate_to_bottom(op, a, get_pos(a->head, a->sorted_end));
-			a->sorted_end = hold;
+			a->sorted_end = b->head->value;
 		}
 		else
 		{
-			rotate_to_top(op, a, get_pos(a->head, bigger_value(tmp_hold, hold)));
-			if (a->sorted_start > hold)
-				a->sorted_start = hold;
+			rotate_to_top(op, a, get_pos(a->head, bigger_value(tmp_hold,b->head->value)));
+			if (a->sorted_start > b->head->value)
+				a->sorted_start = b->head->value;
 		}
-		insert_value_asc(&tmp_hold, hold);
+		insert_value_asc(&tmp_hold, b->head->value);
 		append_ops(op, "pa", &(a->head), &(b->head));
+		a->sorted_amount++;
 		b->sorted_amount--;
 	}
 	rotate_to_top(op, a, get_pos(a->head, a->sorted_start));
 	delete_stack(&tmp_hold);
+}
+
+void merge_test(t_op **op, t_info *a, t_info *b)
+{
+	int a_size = get_size(a->head);
+	
+	solve_top_a(op, a, b, 3);
+	update_info(a);
+	while (a->sorted_amount < a_size)
+	{
+		while (b->sorted_amount < a->sorted_amount)
+	}
 }
 
 int main(int argc, char *argv[])
