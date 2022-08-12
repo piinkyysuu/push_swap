@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap_v2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
+/*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 13:28:16 by thle              #+#    #+#             */
-/*   Updated: 2022/08/11 15:28:56 by thule            ###   ########.fr       */
+/*   Updated: 2022/08/12 16:26:35 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ void update_info(t_info *stack)
 		if (hold > tmp->value)
 		{
 			stack->sorted_end = hold;
-			return ;
+			return;
 		}
 		stack->sorted_amount += 1;
 		hold = tmp->value;
@@ -158,7 +158,7 @@ void rotate_to_bottom(t_op **op, t_info *stack, int pos)
 			append_ops(op, "ra", &(stack->head), NULL);
 			pos--;
 		}
-		return ;
+		return;
 	}
 	while (pos > 0 && pos++ < stack_size)
 	{
@@ -368,36 +368,100 @@ void merge_to_b_test(t_op **op, t_info *a, t_info *b, int amount)
 	rotate_to_top(op, b, get_pos(b->head, b->sorted_start));
 }
 
-void merge_to_a_test(t_op **op, t_info *a, t_info *b)
+t_stack *copy_stack(t_stack *stack, int amount)
 {
-	int final_start;
-	int final_end;
-	
-	update_info(a);
-	update_info(b);
-	final_start = a->sorted_start;
-	final_end = a->sorted_end;
-	if (final_start > b->sorted_end)
-		final_start = b->sorted_end;
-	if (final_end < b->sorted_start)
-		final_end = b->sorted_start;
+	t_stack *tmp;
+	t_stack *head;
 
-	if (b->sorted_start < a->sorted_start)
+	if (amount > 0)
 	{
-		while (b->sorted_amount > 0)
+		head = create_new_element(stack->value);
+		amount--;
+		tmp = head;
+		stack = stack->next;
+		while (stack && amount > 0)
 		{
-			append_ops(op, "pa", &(a->head), &(b->head));
-			b->sorted_amount--;
+			tmp->next = create_new_element(stack->value);
+			tmp = tmp->next;
+			stack = stack->next;
+			amount--;
 		}
+		return head;
 	}
-
-	print_info(a);
-	print_info(b);
-	printf("start:%d end:%d\n", final_start, final_end);
+	return (NULL);
 }
 
+void insert_value_asc(t_stack **head, int value)
+{
+	t_stack *tmp;
+	t_stack *hold;
 
+	tmp = *head;
+	if (!tmp)
+	{
+		*head = create_new_element(value);
+		return;
+	}
+	if (tmp->value > value)
+	{
+		hold = create_new_element(value);
+		if (hold)
+		{
+			hold->next = *head;
+			*head = hold;
+		}
+		return;
+	}
+	while (tmp->next && tmp->next->value < value)
+		tmp = tmp->next;
+	hold = tmp->next;
+	tmp->next = create_new_element(value);
+	if (tmp->next)
+		tmp->next->next = hold;
+}
 
+int bigger_value(t_stack *stack, int value)
+{
+	int hold;
+
+	while (stack)
+	{
+		if (stack->value > value)
+			return stack->value;
+		stack = stack->next;
+	}
+	return (value);
+}
+
+void merge_to_a_test(t_op **op, t_info *a, t_info *b)
+{
+	t_stack *tmp_hold = NULL;
+	int hold;
+
+	update_info(a);
+	update_info(b);
+	tmp_hold = copy_stack(a->head, a->sorted_amount);
+	while (b->sorted_amount > 0)
+	{
+		hold = b->head->value;
+		if (hold > a->sorted_end)
+		{
+			rotate_to_bottom(op, a, get_pos(a->head, a->sorted_end));
+			a->sorted_end = hold;
+		}
+		else
+		{
+			rotate_to_top(op, a, get_pos(a->head, bigger_value(tmp_hold, hold)));
+			if (a->sorted_start > hold)
+				a->sorted_start = hold;
+		}
+		insert_value_asc(&tmp_hold, hold);
+		append_ops(op, "pa", &(a->head), &(b->head));
+		b->sorted_amount--;
+	}
+	rotate_to_top(op, a, get_pos(a->head, a->sorted_start));
+	delete_stack(&tmp_hold);
+}
 
 int main(int argc, char *argv[])
 {
@@ -427,23 +491,21 @@ int main(int argc, char *argv[])
 		// 	printf("%ssorted %s\n", GREEN, WHITE);
 		// else
 		// 	printf("%snot sorted %s\n", RED, WHITE);
-		
-		// printf("pos: %d\n", global_count - 1);
 
+		// printf("pos: %d\n", global_count - 1);
 
 		append_ops(&op, "pb", &(a.head), &(b.head));
 		append_ops(&op, "pb", &(a.head), &(b.head));
 		append_ops(&op, "pb", &(a.head), &(b.head));
 		solve_top_a(&op, &a, &b, 3);
 		solve_b_max_3(&op, &(b.head));
-		
+
 		// append_ops(&op, "pb", &(a.head), &(b.head));
 		// append_ops(&op, "pb", &(a.head), &(b.head));
 		// append_ops(&op, "pb", &(a.head), &(b.head));
-		
-		
+
 		print_2_stacks(a.head, b.head);
-		
+
 		merge_to_a_test(&op, &a, &b);
 
 		print_2_stacks(a.head, b.head);
@@ -452,8 +514,6 @@ int main(int argc, char *argv[])
 		// 	printf("%sSORTED%s\n", GREEN, WHITE);
 		// else
 		// 	printf("%sNOT SORTED%s\n", RED, WHITE);
-		
-		
 	}
 	exit(1);
 	return (1);
