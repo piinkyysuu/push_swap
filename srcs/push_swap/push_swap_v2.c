@@ -6,7 +6,7 @@
 /*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 13:28:16 by thle              #+#    #+#             */
-/*   Updated: 2022/08/14 13:49:06 by thule            ###   ########.fr       */
+/*   Updated: 2022/08/14 17:15:10 by thule            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,65 +166,6 @@ void rotate_to_bottom(t_op **op, t_info *stack, int pos)
 	}
 }
 
-void merge_to_b(t_op **op, t_info *a, t_info *b, int amount)
-{
-	// printf("amount = %d\n", amount);
-	if (b->sorted_amount > 0)
-	{
-		while (amount > 0 && b->sorted_amount > 0)
-		{
-			// printf("a_first: %ld, b_last: %ld\n", get_first(a->head), get_last(b->head));
-			if (get_first(a->head) > get_last(b->head))
-			{
-				// printf("get_first(a->head) > get_last(b->head)\n");
-				append_ops(op, "rrb", &(a->head), &(b->head));
-				b->sorted_amount--;
-			}
-			else
-			{
-				// printf("else\n");
-				append_ops(op, "pb", &(a->head), &(b->head));
-				amount--;
-			}
-		}
-		while (b->sorted_amount-- > 0)
-			append_ops(op, "rrb", &(a->head), &(b->head));
-		while (amount-- > 0)
-			append_ops(op, "pb", &(a->head), &(b->head));
-	}
-	else
-	{
-		push_to_b(op, a, b, amount);
-		solve_b_max_3(op, &(b->head));
-	}
-	update_info(b);
-	// printf("end\n");
-}
-
-void merge_to_a(t_op **op, t_info *a, t_info *b)
-{
-	int res = a->sorted_amount + b->sorted_amount;
-
-	while (a->sorted_amount && b->sorted_amount)
-	{
-		if (get_first(b->head) < get_last(a->head))
-		{
-			append_ops(op, "rra", &(a->head), &(b->head));
-			a->sorted_amount--;
-		}
-		else
-		{
-			append_ops(op, "pa", &(a->head), &(b->head));
-			b->sorted_amount--;
-		}
-	}
-	while (a->sorted_amount-- > 0)
-		append_ops(op, "rra", &(a->head), &(b->head));
-	while (b->sorted_amount-- > 0)
-		append_ops(op, "pa", &(a->head), &(b->head));
-	a->sorted_amount = res;
-	update_info(a);
-}
 
 void solve_top_a(t_op **op, t_info *a, t_info *b, int amount)
 {
@@ -245,93 +186,64 @@ void solve_top_a(t_op **op, t_info *a, t_info *b, int amount)
 			return;
 		else if (first < second && first < third && second > third)
 		{
-			append_ops(op, "pb", &(a->head), &(b->head));
+			// append_ops(op, "pb", &(a->head), &(b->head));
+			// append_ops(op, "sa", &(a->head), &(b->head));
+			// append_ops(op, "pa", &(a->head), &(b->head));
+			
+			append_ops(op, "ra", &(a->head), &(b->head));
 			append_ops(op, "sa", &(a->head), &(b->head));
-			append_ops(op, "pa", &(a->head), &(b->head));
+			append_ops(op, "rra", &(a->head), &(b->head));
 		}
 		else if (first > second && second < third && third > first)
+		{
 			append_ops(op, "sa", &(a->head), &(b->head));
+		}
 		else if (first < second && second > third && first > third)
 		{
-			append_ops(op, "pb", &(a->head), &(b->head));
+			// append_ops(op, "pb", &(a->head), &(b->head));
+			// append_ops(op, "sa", &(a->head), &(b->head));
+			// append_ops(op, "pa", &(a->head), &(b->head));
+			// append_ops(op, "sa", &(a->head), &(b->head));
+			
+			append_ops(op, "ra", &(a->head), &(b->head));
 			append_ops(op, "sa", &(a->head), &(b->head));
-			append_ops(op, "pa", &(a->head), &(b->head));
+			append_ops(op, "rra", &(a->head), &(b->head));
 			append_ops(op, "sa", &(a->head), &(b->head));
 		}
 		else if (third < second && second < first)
 		{
+			// append_ops(op, "ra", &(a->head), &(b->head));
+			// append_ops(op, "sa", &(a->head), &(b->head));
+			// append_ops(op, "pb", &(a->head), &(b->head));
+			// append_ops(op, "rra", &(a->head), &(b->head));
+			// append_ops(op, "sa", &(a->head), &(b->head));
+			// append_ops(op, "pa", &(a->head), &(b->head));
+
 			append_ops(op, "ra", &(a->head), &(b->head));
 			append_ops(op, "sa", &(a->head), &(b->head));
-			append_ops(op, "pb", &(a->head), &(b->head));
 			append_ops(op, "rra", &(a->head), &(b->head));
 			append_ops(op, "sa", &(a->head), &(b->head));
-			append_ops(op, "pa", &(a->head), &(b->head));
+			append_ops(op, "ra", &(a->head), &(b->head));
+			append_ops(op, "sa", &(a->head), &(b->head));
+			append_ops(op, "rra", &(a->head), &(b->head));
 		}
 		else
 		{
-			append_ops(op, "pb", &(a->head), &(b->head));
-			append_ops(op, "pb", &(a->head), &(b->head));
-			append_ops(op, "sb", &(a->head), &(b->head));
-			append_ops(op, "pa", &(a->head), &(b->head));
+			// append_ops(op, "pb", &(a->head), &(b->head));
+			// append_ops(op, "pb", &(a->head), &(b->head));
+			// append_ops(op, "sb", &(a->head), &(b->head));
+			// append_ops(op, "pa", &(a->head), &(b->head));
+			// append_ops(op, "sa", &(a->head), &(b->head));
+			// append_ops(op, "pa", &(a->head), &(b->head));
+
 			append_ops(op, "sa", &(a->head), &(b->head));
-			append_ops(op, "pa", &(a->head), &(b->head));
+			append_ops(op, "ra", &(a->head), &(b->head));
+			append_ops(op, "sa", &(a->head), &(b->head));
+			append_ops(op, "rra", &(a->head), &(b->head));
 		}
 	}
 }
 
-void merge(t_op **op, t_info *a, t_info *b)
-{
-	int a_size = get_size(a->head);
-	int remainder = 3;
-
-	// merge_to_b(op, a, b, 3);
-	solve_top_a(op, a, b, 3);
-	a->sorted_amount = 3;
-	a->sorted_start = (a->head)->value;
-	a->sorted_end = (a->head)->next->next->value;
-
-	while (a->sorted_amount < a_size)
-	{
-		// printf("%soutter loop%s\n", GREEN, WHITE);
-		while (b->sorted_amount < a->sorted_amount && a->sorted_amount != get_size(a->head))
-		{
-			// printf("%sinner loop%s\n", RED, WHITE);
-			remainder = a_size - a->sorted_amount - get_size(b->head);
-			if (remainder <= 0)
-			{
-				// printf("%sbreak%s\n", RED, WHITE);
-				break;
-			}
-			else if (remainder > 3)
-				remainder = 3;
-			int rotate = remainder;
-			// printf("remainder: %d\n", remainder);
-			while (rotate-- > 0)
-				append_ops(op, "rra", &(a->head), &(b->head));
-			// print_2_stacks(a->head, b->head);
-			if (!(b->head))
-			{
-				merge_to_b(op, a, b, remainder);
-				continue;
-			}
-			else
-			{
-				solve_top_a(op, a, b, remainder);
-				// printf("%ssolve_top_a%s\n", MAGENTA, WHITE);
-				// print_2_stacks(a->head, b->head);
-				merge_to_b(op, a, b, remainder);
-			}
-			// print_2_stacks(a->head, b->head);
-		}
-		if (a->sorted_amount != get_size(a->head))
-		{
-			rotate_to_bottom(op, a, get_pos(a->head, a->sorted_end));
-		}
-		// print_2_stacks(a->head, b->head);
-		merge_to_a(op, a, b);
-		// print_2_stacks(a->head, b->head);
-	}
-}
 
 int smaller_value(t_info *stack, int value)
 {
@@ -352,7 +264,7 @@ int smaller_value(t_info *stack, int value)
 	return hold;
 }
 
-void merge_to_b_test(t_op **op, t_info *a, t_info *b, int amount)
+void merge_to_b(t_op **op, t_info *a, t_info *b, int amount)
 {
 	update_info(b);
 	while (amount > 0)
@@ -433,7 +345,7 @@ int bigger_value(t_stack *stack, int value)
 	return (value);
 }
 
-void merge_to_a_test(t_op **op, t_info *a, t_info *b)
+void merge_to_a(t_op **op, t_info *a, t_info *b)
 {
 	t_stack *tmp_hold = NULL;
 
@@ -463,7 +375,7 @@ void merge_to_a_test(t_op **op, t_info *a, t_info *b)
 	delete_stack(&tmp_hold);
 }
 
-void merge_test(t_op **op, t_info *a, t_info *b)
+void merge(t_op **op, t_info *a, t_info *b)
 {
 	int a_size = get_size(a->head);
 	int remainder = 3;
@@ -497,13 +409,19 @@ void merge_test(t_op **op, t_info *a, t_info *b)
 			{
 				// printf("%sb->head\n%s", RED, WHITE);
 				// printf("remainder: %d\n", remainder);
+				rotate = a_size - a->sorted_amount - b->sorted_amount - remainder;
 				solve_top_a(op, a, b, remainder);
-				merge_to_b_test(op, a, b, remainder);
+				while (rotate-- > 0 && a->head->value > get_last(a->head))
+				{
+					append_ops(op, "rra", &(a->head), &(b->head));
+					remainder++;
+				}
+				merge_to_b(op, a, b, remainder);
 			}
 			// print_2_stacks(a->head, b->head);
 		}
 		// print_2_stacks(a->head, b->head);
-		merge_to_a_test(op, a, b);
+		merge_to_a(op, a, b);
 	}
 }
 
@@ -527,14 +445,18 @@ int main(int argc, char *argv[])
 		print_intial_a(a.head);
 		global_count = 1;
 		
+		
+
+		print_2_stacks(a.head, b.head);
+		// solve_top_a(&op, &a, &b, 3);
+
+		merge(&op, &a, &b);
 
 		// print_2_stacks(a.head, b.head);
 
-		merge_test(&op, &a, &b);
 
-		// print_2_stacks(a.head, b.head);
-
-		if (is_sorted(b.head, DESC))
+		global_count--;
+		if (is_stack_sorted(&(a.head)))
 			printf("%sSORTED%s %d\n", GREEN, YELLOW, global_count);
 		else
 			printf("%sNOT SORTED%s %d\n", RED, YELLOW, global_count);
@@ -722,7 +644,11 @@ void solve_a_max_3(t_op **op, t_stack **stack)
 
 void append_ops(t_op **head, char *op, t_stack **a, t_stack **b)
 {
-	printf("%s%d: %s%s%s\n", BLUE, global_count, YELLOW, op, WHITE);
+	if (!ft_strcmp(op, "pb") || !ft_strcmp(op, "pa"))
+		printf("%s%d: %s%s%s\n", BLUE, global_count, RED, op, WHITE);
+	else
+		printf("%s%d: %s%s%s\n", BLUE, global_count, YELLOW, op, WHITE);
+	// printf("%s%s%s\n", YELLOW, op, WHITE);
 	global_count++;
 	t_op *tmp;
 	t_op *new;
