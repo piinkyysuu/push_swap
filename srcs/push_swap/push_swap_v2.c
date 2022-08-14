@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap_v2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 13:28:16 by thle              #+#    #+#             */
-/*   Updated: 2022/08/12 16:53:21 by thle             ###   ########.fr       */
+/*   Updated: 2022/08/14 13:49:06 by thule            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -459,18 +459,51 @@ void merge_to_a_test(t_op **op, t_info *a, t_info *b)
 		b->sorted_amount--;
 	}
 	rotate_to_top(op, a, get_pos(a->head, a->sorted_start));
+	update_info(a);
 	delete_stack(&tmp_hold);
 }
 
 void merge_test(t_op **op, t_info *a, t_info *b)
 {
 	int a_size = get_size(a->head);
+	int remainder = 3;
+	int rotate;
 	
 	solve_top_a(op, a, b, 3);
 	update_info(a);
+	// print_2_stacks(a->head, b->head);
 	while (a->sorted_amount < a_size)
 	{
+		// printf("%sOUTTER\n%s", RED, WHITE);
 		while (b->sorted_amount < a->sorted_amount)
+		{
+			// printf("%sINNER\n%s", RED, WHITE);
+			if (a_size - a->sorted_amount - b->sorted_amount < 3)
+				remainder = a_size - a->sorted_amount - b->sorted_amount;
+			if (remainder <= 0)
+				break;
+			rotate = remainder;
+			while (rotate-- > 0)
+				append_ops(op, "rra", &(a->head), &(b->head));
+			if (!(b->head))
+			{
+				// printf("%s!(b->head)\n%s", RED, WHITE);
+				push_to_b(op, a, b, remainder);
+				solve_b_max_3(op, &(b->head));
+				update_info(b);
+				continue;
+			}
+			else
+			{
+				// printf("%sb->head\n%s", RED, WHITE);
+				// printf("remainder: %d\n", remainder);
+				solve_top_a(op, a, b, remainder);
+				merge_to_b_test(op, a, b, remainder);
+			}
+			// print_2_stacks(a->head, b->head);
+		}
+		// print_2_stacks(a->head, b->head);
+		merge_to_a_test(op, a, b);
 	}
 }
 
@@ -492,39 +525,19 @@ int main(int argc, char *argv[])
 	{
 		// // printf("amount: %d\n", amount);
 		print_intial_a(a.head);
-		// global_count = 1;
+		global_count = 1;
+		
+
 		// print_2_stacks(a.head, b.head);
-		// merge(&op, &a, &b);
-		// // printf("\n");
-		// // print_2_stacks(a.head, b.head);
 
-		// if (is_stack_sorted(&(a.head)))
-		// 	printf("%ssorted %s\n", GREEN, WHITE);
-		// else
-		// 	printf("%snot sorted %s\n", RED, WHITE);
+		merge_test(&op, &a, &b);
 
-		// printf("pos: %d\n", global_count - 1);
-
-		append_ops(&op, "pb", &(a.head), &(b.head));
-		append_ops(&op, "pb", &(a.head), &(b.head));
-		append_ops(&op, "pb", &(a.head), &(b.head));
-		solve_top_a(&op, &a, &b, 3);
-		solve_b_max_3(&op, &(b.head));
-
-		// append_ops(&op, "pb", &(a.head), &(b.head));
-		// append_ops(&op, "pb", &(a.head), &(b.head));
-		// append_ops(&op, "pb", &(a.head), &(b.head));
-
-		print_2_stacks(a.head, b.head);
-
-		merge_to_a_test(&op, &a, &b);
-
-		print_2_stacks(a.head, b.head);
 		// print_2_stacks(a.head, b.head);
-		// if (is_sorted(b.head, DESC))
-		// 	printf("%sSORTED%s\n", GREEN, WHITE);
-		// else
-		// 	printf("%sNOT SORTED%s\n", RED, WHITE);
+
+		if (is_sorted(b.head, DESC))
+			printf("%sSORTED%s %d\n", GREEN, YELLOW, global_count);
+		else
+			printf("%sNOT SORTED%s %d\n", RED, YELLOW, global_count);
 	}
 	exit(1);
 	return (1);
