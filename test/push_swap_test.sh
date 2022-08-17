@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PATH='/Users/thle/Desktop/projects/push_swap'
+PATH='/Users/thule/Desktop/projects/push_swap'
 
 #test for 3
 # $PATH/push_swap 1 2 3
