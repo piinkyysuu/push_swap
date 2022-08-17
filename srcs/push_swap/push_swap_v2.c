@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap_v2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 13:28:16 by thle              #+#    #+#             */
-/*   Updated: 2022/08/16 19:26:38 by thle             ###   ########.fr       */
+/*   Updated: 2022/08/17 18:08:41 by thule            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -312,8 +312,7 @@ void initialize_info(t_info *stack, char name)
 	stack->name = name;
 	stack->head = NULL;
 	stack->sorted = NULL;
-	stack->sorted_start = 0;
-	stack->sorted_end = 0;
+
 	stack->sorted_amount = 0;
 
 	stack->min = 0;
@@ -384,12 +383,12 @@ int main(int argc, char *argv[])
 		write(2, "Error\n", 6);
 	else
 	{
-		print_intial_a(g_a.head);
+		// print_intial_a(g_a.head);
 
-		print_2_stacks(g_a.head, g_b.head);
+		// print_2_stacks(g_a.head, g_b.head);
 		
 		merge(&op, &g_a, &g_b);
-		print_2_stacks(g_a.head, g_b.head);
+		// print_2_stacks(g_a.head, g_b.head);
 
 
 		// global_count--;
@@ -532,7 +531,7 @@ void append_ops(t_op **head, char *op, t_stack **a, t_stack **b)
 	// 	printf("%s%d: %s%s%s\n", MAGENTA, global_count, YELLOW, op, WHITE);
 	
 	// printf("%s%s%s\n", YELLOW, op, WHITE);
-	// printf("%s\n", op);
+	printf("%s\n", op);
 
 	// global_count++;
 	t_op *tmp;
@@ -543,14 +542,14 @@ void append_ops(t_op **head, char *op, t_stack **a, t_stack **b)
 	if (!apply_op(op_array, op, a, b))
 		exit(1);
 		
-	printf("%s---------------%s", CYAN, WHITE);
-	if (!ft_strcmp(op, "pb") || !ft_strcmp(op, "pa"))
-		printf(" %s%5d: %s%3s%s ", MAGENTA, global_count, RED, op, WHITE);
-	else
-		printf(" %s%5d: %s%3s%s ", MAGENTA, global_count, YELLOW, op, WHITE);
-	printf("%s---------------%s\n", CYAN, WHITE);
-	print_2_stacks(g_a.head, g_b.head);
-	printf("\n");
+	// printf("%s---------------%s", CYAN, WHITE);
+	// if (!ft_strcmp(op, "pb") || !ft_strcmp(op, "pa"))
+	// 	printf(" %s%5d: %s%3s%s ", MAGENTA, global_count, RED, op, WHITE);
+	// else
+	// 	printf(" %s%5d: %s%3s%s ", MAGENTA, global_count, YELLOW, op, WHITE);
+	// printf("%s---------------%s\n", CYAN, WHITE);
+	// print_2_stacks(g_a.head, g_b.head);
+	// printf("\n");
 	
 	global_count++;
 	tmp = *head;
