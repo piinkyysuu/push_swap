@@ -6,7 +6,7 @@
 /*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 13:28:16 by thle              #+#    #+#             */
-/*   Updated: 2022/08/19 03:02:26 by thule            ###   ########.fr       */
+/*   Updated: 2022/08/23 15:36:32 by thule            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,9 @@ typedef struct s_info
 	char name;
 	t_stack *head;
 	t_stack *sorted;
+
+	t_stack **hold;
+
 	int sorted_start;
 	int sorted_end;
 	int sorted_amount;
@@ -70,69 +73,6 @@ void print_op(t_op *op);
 
 t_info g_a;
 t_info g_b;
-
-t_stack *sorted_merge(t_stack *a, t_stack *b)
-{
-	t_stack *result;
-
-	result = NULL;
-	if (a == NULL)
-		return b;
-	else if (b == NULL)
-		return a;
-	if (a->value <= b->value)
-	{
-		result = a;
-		result->next = sorted_merge(a->next, b);
-	}
-	else
-	{
-		result = b;
-		result->next = sorted_merge(a, b->next);
-	}
-	return result;
-}
-
-void divide_into_half(t_stack *head, t_stack **first_half, t_stack **second_half)
-{
-	t_stack *fast;
-	t_stack *slow;
-
-	if (!head)
-		return;
-	fast = head->next;
-	slow = head;
-	if (fast)
-		fast = fast->next;
-	while (fast)
-	{
-		if (fast->next)
-			fast = fast->next->next;
-		else
-			fast = fast->next;
-		slow = slow->next;
-	}
-	*first_half = head;
-	*second_half = slow->next;
-	slow->next = NULL;
-}
-
-void merge_sort(t_stack **head)
-{
-	t_stack *first_half;
-	t_stack *second_half;
-	t_stack *tmp_head;
-
-	first_half = NULL;
-	second_half = NULL;
-	tmp_head = *head;
-	if (!tmp_head || !(tmp_head->next))
-		return;
-	divide_into_half(*head, &first_half, &second_half);
-	merge_sort(&first_half);
-	merge_sort(&second_half);
-	*head = sorted_merge(first_half, second_half);
-}
 
 void print_info(t_info *stack)
 {
@@ -385,10 +325,10 @@ void initialize_info(t_info *stack, char name)
 
 	stack->sorted_amount = 0;
 
-
 	stack->splitted = 0;
 	stack->min = 0;
 	stack->max = 0;
+	stack->hold = NULL;
 
 	stack->op[4] = "\0";
 	stack->op[PUSH] = "pa";
@@ -404,22 +344,6 @@ void initialize_info(t_info *stack, char name)
 	}
 }
 
-int sequence_count(t_stack *stack)
-{
-	int hold;
-
-	hold = 1;
-	while (stack->next)
-	{
-		if (stack->value > stack->next->value)
-			return (hold);
-		hold++;
-		stack = stack->next;
-	}
-	return hold;
-}
-
-
 int split_stack(t_op **op, t_info *a, t_info *b, int stack_size)
 {
 	t_info *container;
@@ -431,26 +355,9 @@ int split_stack(t_op **op, t_info *a, t_info *b, int stack_size)
 		container = a;
 	while (other_stack_size-- > 0)
 		append_ops(op, container->op[PUSH], &(a->head), &(b->head));
-	// print_2_stacks(g_a.head, g_b.head);
 	a->splitted = 0;
 	b->splitted = 0;
 	return (stack_size / 2);
-}
-
-t_stack *combine(t_stack **head, t_stack *tail)
-{
-	if (!(*head) && tail)
-	{
-		*head = tail;
-		merge_sort(head);
-		return *head;
-	}
-	t_stack *tmp = *head;
-	while (tmp->next)
-		tmp = tmp->next;
-	tmp->next = tail;
-	merge_sort(head);
-	return *head;
 }
 
 t_stack *retrieve_node(t_stack **stack, int value)
@@ -459,6 +366,7 @@ t_stack *retrieve_node(t_stack **stack, int value)
 	t_stack *tmp;
 
 	tmp = *stack;
+	prev = NULL;
 	if (tmp && tmp->value == value)
 	{
 		*stack = (*stack)->next;
@@ -477,197 +385,136 @@ t_stack *retrieve_node(t_stack **stack, int value)
 	return tmp;
 }
 
-void merge_tmp_stack_order(t_stack **stack, t_stack *new)
+int get_value_test(t_stack *stack, int value, int order)
 {
-	t_stack *tmp;
-	t_stack *hold;
+	long hold;
 
-	tmp = *stack;
-	hold = NULL;
-	if (!tmp)
+	hold = LONG_MIN;
+	if (order == ASC)
+		hold = LONG_MAX;
+	while (stack)
 	{
-		*stack = new;
-		return;
-	}
-	while (tmp)
-	{
-		if (new->value < tmp->value)
-			break;
-		hold = tmp;
-		tmp = tmp->next;
-	}
-	if (hold == NULL)
-	{
-		new->next = tmp;
-		*stack = new;
-	}
-	else
-	{
-		hold->next = new;
-		new->next = tmp;
-	}
-}
-
-int get_value_desc(t_stack *stack, int value, int order)
-{
-	while (stack->next)
-	{
-		if (value > stack->value && value < stack->next->value)
-			return stack->value;
+		if (stack->value < value && hold < stack->value && order == DESC)
+			hold = stack->value;
+		if (stack->value > value && hold > stack->value && order == ASC)
+			hold = stack->value;
 		stack = stack->next;
 	}
-	return (1);
+	return hold;
 }
 
-void merge_stack_b(t_op **op, t_info *a, t_info *b, t_stack **on_a, t_stack **on_b)
+void merge_to_stack_b(t_op **op, t_info *a, t_info *b)
 {
-	// printf("___________MERGE_B________\n");
-	// print_2_stacks(*on_a, *on_b);
-	int a_size = get_size(*on_a);
+	int a_size;
 	int value;
 	int min;
 	int max;
+	t_stack *hold;
 
+	a_size = get_size(*(a->hold));
 	while (a_size-- > 0)
 	{
 		value = a->head->value;
-		min = get_min(*on_b);
-		max = get_max(*on_b);
+		min = get_min(*(b->hold));
+		max = get_max(*(b->hold));
 		if (value > max)
 			rotate_to_top(op, b, get_pos(b->head, max));
 		else if (value < min)
 			rotate_to_bottom(op, b, get_pos(b->head, min));
 		else
-			rotate_to_top(op, b, get_pos(b->head, get_value_desc(*on_b, value, DESC)));
+			rotate_to_top(op, b, get_pos(b->head, get_value_test(*(b->hold), value, DESC)));
 		append_ops(op, b->op[PUSH], &(a->head), &(b->head));
-		// print_2_stacks(a->head, b->head);
-		merge_tmp_stack_order(on_b, retrieve_node(on_a, value));
+		hold = retrieve_node(a->hold, value);
+		push(b->hold, &hold);
 	}
-	// rotate_to_top(op, b, get_pos(b->head, get_max(*on_b)));
-	// print_2_stacks(a->head, b->head);
 }
 
-void merge_stack_a(t_op **op, t_info *a, t_info *b, t_stack **on_a, t_stack **on_b)
+void merge_to_stack_a(t_op **op, t_info *a, t_info *b)
 {
-	// printf("___________MERGE_A________\n");
-	int b_size = get_size(*on_b);
+	int b_size;
 	int value;
-	int min;
 	int max;
+	t_stack *hold;
 
-	rotate_to_top(op, b, get_pos(b->head, get_max(*on_b)));
-
+	rotate_to_top(op, b, get_pos(b->head, get_max(*(b->hold))));
+	b_size = get_size(*(b->hold));
 	while (b_size-- > 0)
 	{
 		value = b->head->value;
-		min = get_min(*on_a);
-		max = get_max(*on_a);
+		max = get_max(*(a->hold));
 		if (value > max)
 			rotate_to_bottom(op, a, get_pos(a->head, max));
 		else
-		{
-			int random = get_value(*on_a, value, ASC);
-			int pos = get_pos(a->head, random);
-			// print_stack(*on_a, 'o');
-			// printf("pos: %d; random:%d; value:%d\n", pos, random, value);
-			rotate_to_top(op, a, pos);
-			
-		}
+			rotate_to_top(op, a, get_pos(a->head, get_value_test(*(a->hold), value, ASC)));
 		append_ops(op, a->op[PUSH], &(a->head), &(b->head));
-		// print_2_stacks(a->head, b->head);
-		merge_tmp_stack_order(on_a, retrieve_node(on_b, value));
+		hold = retrieve_node(b->hold, value);
+		push(a->hold, &hold);
 	}
-	rotate_to_top(op, a, get_pos(a->head, get_min(*on_a)));
-	// print_2_stacks(a->head, b->head);
+	rotate_to_top(op, a, get_pos(a->head, get_min(*(a->hold))));
 }
 
 t_stack *stack_b(t_op **op, t_info *a, t_info *b, int stack_size)
 {
-	// printf("-----------------B-----------------\n");
-	t_stack *on_a = NULL;
-	t_stack *on_b = NULL;
-	t_stack *sorted = NULL;
+	t_stack *on_a;
+	t_stack *on_b;
 	int container_size;
-	
+
+	on_a = NULL;
+	on_b = NULL;
 	if (stack_size <= 3)
 	{
-		// printf("b: %d\n", stack_size);
 		solve_three(op, b, stack_size);
 		on_b = copy_stack(b->head, stack_size);
-		// merge_sort(&on_b);
 		return on_b;
 	}
 	b->splitted = 1;
 	container_size = split_stack(op, a, b, stack_size);
 	stack_size = stack_size - container_size;
-	// printf("b: stack:%d, container:%d\n", stack_size, container_size);
-	
 	on_b = stack_b(op, a, b, stack_size);
-	merge_sort(&on_b);
 	on_a = stack_a(op, a, b, container_size);
-	merge_sort(&on_a);
-
-	merge_stack_b(op, a, b, &on_a, &on_b);
-	
-	// printf("%s stack_b\n", CYAN);
-	// print_stack(on_a, 'a');
-	// print_stack(on_b, 'b');
-	// printf("%s", WHITE);
-	// printf("-----------------end:B-----------------\n");
-	
+	a->hold = &on_a;
+	b->hold = &on_b;
+	merge_to_stack_b(op, a, b);
 	return on_b;
 }
 
 t_stack *stack_a(t_op **op, t_info *a, t_info *b, int stack_size)
 {
-	// printf("-----------------A-----------------\n");
-	t_stack *on_a = NULL;
-	t_stack *on_b = NULL;
-	t_stack *sorted = NULL;
+	t_stack *on_a;
+	t_stack *on_b;
 	int container_size;
-	
+
+	on_a = NULL;
+	on_b = NULL;
 	if (stack_size <= 3)
 	{
-		// printf("a: %d\n", stack_size);
-
 		solve_three(op, a, stack_size);
 		on_a = copy_stack(a->head, stack_size);
-		// merge_sort(&on_a);
 		return on_a;
 	}
 	a->splitted = 1;
 	container_size = split_stack(op, a, b, stack_size);
 	stack_size = stack_size - container_size;
-	
-	// printf("a: stack:%d, container:%d\n", stack_size, container_size);
-	
-	
 	on_b = stack_b(op, a, b, container_size);
-	merge_sort(&on_b);
 	on_a = stack_a(op, a, b, stack_size);
-	merge_sort(&on_a);
-	merge_stack_a(op, a, b, &on_a, &on_b);
-	
-	
-	// printf("%sstack_a\n", CYAN);
-	// print_stack(on_a, 'a');
-	// print_stack(on_b, 'b');
-	// printf("%s", WHITE);
-	// printf("-----------------end:A-----------------\n");
-	
+	a->hold = &on_a;
+	b->hold = &on_b;
+	merge_to_stack_a(op, a, b);
 	return on_a;
 }
 
 void merge_test(t_op **op, t_info *a, t_info *b, int stack_size)
 {
-	t_stack *sorted = stack_a(op, a, b, stack_size);
-	// rotate_to_top(op, a, get_pos(a->head, get_min(a->head)));
+	t_stack *sorted;
+
+	sorted = stack_a(op, a, b, stack_size);
+	delete_stack(&sorted);
 }
+
 
 
 int main(int argc, char *argv[])
 {
-
 	t_stack *stack;
 
 	t_op *op = NULL;
@@ -681,30 +528,17 @@ int main(int argc, char *argv[])
 		write(2, "Error\n", 6);
 	else
 	{
-		// print_intial_a(g_a.head);
+		print_intial_a(g_a.head);
 
-		// print_2_stacks(g_a.head, g_b.head);
+		print_2_stacks(g_a.head, g_b.head);
 
-		// merge(&op, &g_a, &g_b);
-		
 		merge_test(&op, &g_a, &g_b, get_size(g_a.head));
-
-		// appen
-		
-		// printf("sequence: %d\n", sequence_count(g_a.head));
-		// print_2_stacks(g_a.head, g_b.head);
 
 		global_count--;
 		if (is_stack_sorted(&(g_a.head)) && !(g_b.head))
 			printf("%sSORTED%s %d\n%s", GREEN, YELLOW, global_count, WHITE);
 		else
 			printf("%sNOT SORTED%s %d%s\n", RED, YELLOW, global_count, WHITE);
-
-		// t_stack *tmp_node = retrieve_node(&(g_a.head), 1);
-		// print_2_stacks(g_a.head, tmp_node);
-		// merge_tmp_stack_order(&(g_a.head), tmp_node);
-		// print_2_stacks(g_a.head, tmp_node);
-		
 	}
 	exit(1);
 	return (1);
@@ -920,11 +754,9 @@ void solve_top_three_helper(t_op **op, t_info *stack)
 	append_ops(op, stack->op[ROT], &(stack->head), &(stack->head));
 	append_ops(op, stack->op[SWAP], &(stack->head), &(stack->head));
 	append_ops(op, stack->op[R_ROT], &(stack->head), &(stack->head));
-	if ((first < second && second > third && first > third && stack->name == 'a')
-		|| (first > second && second < third && first < third && stack->name == 'b'))
+	if ((first < second && second > third && first > third && stack->name == 'a') || (first > second && second < third && first < third && stack->name == 'b'))
 		append_ops(op, stack->op[SWAP], &(stack->head), &(stack->head));
-	else if ((third < second && second < first && stack->name == 'a') 
-			|| (third > second && second > first && stack->name == 'b'))
+	else if ((third < second && second < first && stack->name == 'a') || (third > second && second > first && stack->name == 'b'))
 	{
 		append_ops(op, stack->op[SWAP], &(stack->head), &(stack->head));
 		append_ops(op, stack->op[ROT], &(stack->head), &(stack->head));
@@ -942,14 +774,11 @@ void solve_top_three(t_op **op, t_info *stack)
 	first = stack->head->value;
 	second = stack->head->next->value;
 	third = stack->head->next->next->value;
-	if ((first < second && second < third && stack->name == 'a')
-		|| (first > second && second > third && stack->name == 'b'))
+	if ((first < second && second < third && stack->name == 'a') || (first > second && second > third && stack->name == 'b'))
 		return;
-	else if ((first > second && second < third && third > first && stack->name == 'a')
-			|| (first < second && second > third && third < first && stack->name == 'b'))
+	else if ((first > second && second < third && third > first && stack->name == 'a') || (first < second && second > third && third < first && stack->name == 'b'))
 		append_ops(op, stack->op[SWAP], &(stack->head), &(stack->head));
-	else if ((first > second && first > third && second < third && stack->name == 'a')
-			|| (first < second && first < third && second > third && stack->name == 'b'))
+	else if ((first > second && first > third && second < third && stack->name == 'a') || (first < second && first < third && second > third && stack->name == 'b'))
 	{
 		append_ops(op, stack->op[SWAP], &(stack->head), &(stack->head));
 		append_ops(op, stack->op[ROT], &(stack->head), &(stack->head));
