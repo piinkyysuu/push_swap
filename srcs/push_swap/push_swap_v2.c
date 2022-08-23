@@ -6,7 +6,7 @@
 /*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 13:28:16 by thle              #+#    #+#             */
-/*   Updated: 2022/08/23 15:36:32 by thule            ###   ########.fr       */
+/*   Updated: 2022/08/23 22:23:18 by thule            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -511,7 +511,41 @@ void merge_test(t_op **op, t_info *a, t_info *b, int stack_size)
 	delete_stack(&sorted);
 }
 
+// t_op *clean_instruction(t_op *op, t_op *next)
+// {
+// 	t_op *tmp;
 
+// 	tmp = op;
+// 	while (tmp->next)
+// 	{
+// 		printf("%s\n", tmp->op);
+// 		tmp = tmp->next;
+// 	}
+// 	printf("\n");
+// 	tmp->next = next;
+// 	return next;
+// }
+
+// void optimize_instruction(t_op **op)
+// {
+// 	int pos = 1;
+// 	t_op *tmp = *op;
+// 	t_op *hold = NULL;
+
+// 	while (tmp)
+// 	{
+// 		if (!ft_strcmp("pa", tmp->op) || !ft_strcmp("pb", tmp->op))
+// 		{
+// 			write(1, tmp->op, 2);
+// 			write(1, "\n", 1);
+// 			free(hold);
+// 		}
+// 		else
+		
+// 		hold = tmp;
+// 		tmp = tmp->next;
+// 	}
+// }
 
 int main(int argc, char *argv[])
 {
@@ -529,16 +563,27 @@ int main(int argc, char *argv[])
 	else
 	{
 		print_intial_a(g_a.head);
-
-		print_2_stacks(g_a.head, g_b.head);
-
+		// print_2_stacks(g_a.head, g_b.head);
 		merge_test(&op, &g_a, &g_b, get_size(g_a.head));
 
-		global_count--;
-		if (is_stack_sorted(&(g_a.head)) && !(g_b.head))
-			printf("%sSORTED%s %d\n%s", GREEN, YELLOW, global_count, WHITE);
-		else
-			printf("%sNOT SORTED%s %d%s\n", RED, YELLOW, global_count, WHITE);
+		// optimize_instruction(&op);
+
+		// global_count--;
+		// if (is_stack_sorted(&(g_a.head)) && !(g_b.head))
+		// 	printf("%sSORTED%s %d\n%s", GREEN, YELLOW, global_count, WHITE);
+		// else
+		// 	printf("%sNOT SORTED%s %d%s\n", RED, YELLOW, global_count, WHITE);
+
+		// t_op *tmp = op;
+		// while (tmp)
+		// {
+		// 	if (!ft_strcmp(tmp->op, "pb") || !ft_strcmp(tmp->op, "pa"))
+		// 		printf("%s%d: %s%s%s\n", MAGENTA, pos, RED, tmp->op, WHITE);
+		// 	else
+		// 		printf("%s%d: %s%s%s\n", MAGENTA, pos, YELLOW, tmp->op, WHITE);
+		// 	pos++;
+		// 	tmp = tmp->next;
+		// }
 	}
 	exit(1);
 	return (1);
@@ -667,10 +712,10 @@ void print_intial_a(t_stack *a)
 
 void append_ops(t_op **head, char *op, t_stack **a, t_stack **b)
 {
-	if (!ft_strcmp(op, "pb") || !ft_strcmp(op, "pa"))
-		printf("%s%d: %s%s%s\n", MAGENTA, global_count, RED, op, WHITE);
-	else
-		printf("%s%d: %s%s%s\n", MAGENTA, global_count, YELLOW, op, WHITE);
+	// if (!ft_strcmp(op, "pb") || !ft_strcmp(op, "pa"))
+	// 	printf("%s%d: %s%s%s\n", MAGENTA, global_count, RED, op, WHITE);
+	// else
+	// 	printf("%s%d: %s%s%s\n", MAGENTA, global_count, YELLOW, op, WHITE);
 
 	// printf("%s%s%s\n", YELLOW, op, WHITE);
 	// printf("%s\n", op);
