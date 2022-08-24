@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap_v2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
+/*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 13:28:16 by thle              #+#    #+#             */
-/*   Updated: 2022/08/23 22:23:18 by thule            ###   ########.fr       */
+/*   Updated: 2022/08/24 20:42:37 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,82 +14,16 @@
 
 #include "push_swap.h"
 
-#define ASC 2
-#define DESC 1
-
 #define EMPTY LONG_MIN
 
 int global_count = 1;
 
-enum e_op
-{
-	PUSH,
-	SWAP,
-	ROT,
-	R_ROT
-};
-
-typedef struct s_op
-{
-	char *op;
-	struct s_op *next;
-} t_op;
-
-typedef struct s_info
-{
-	char name;
-	t_stack *head;
-	t_stack *sorted;
-
-	t_stack **hold;
-
-	int sorted_start;
-	int sorted_end;
-	int sorted_amount;
-
-	int splitted;
-
-	int min;
-	int max;
-
-	char *op[5];
-} t_info;
-
-t_stack *stack_b(t_op **op, t_info *a, t_info *b, int stack_size);
-t_stack *stack_a(t_op **op, t_info *a, t_info *b, int stack_size);
-
-int is_sorted(t_stack *stack, int order);
-int get_size(t_stack *stack);
-long get_first(t_stack *stack);
-long get_last(t_stack *stack);
-long get_min(t_stack *stack);
-long get_max(t_stack *stack);
-
-void solve_three(t_op **op, t_info *stack, int amount);
-void solve_five(t_op **op, t_info *a, t_info *b);
 void print_intial_a(t_stack *a);
-void append_ops(t_op **head, char *op, t_stack **a, t_stack **b);
+void process_and_print_op(t_op **head, char *op, t_stack **a, t_stack **b);
 void print_op(t_op *op);
 
 t_info g_a;
 t_info g_b;
-
-void print_info(t_info *stack)
-{
-	printf("%s%c%s: ", CYAN, stack->name, WHITE);
-	printf("[sorted:%3d] ", stack->sorted_amount);
-	printf("[start:%3d] ", stack->sorted_start);
-	printf("[end:%3d]\n", stack->sorted_end);
-}
-
-void push_to_b(t_op **op, t_info *a, t_info *b, int amount)
-{
-	while (amount > 0 && a->head)
-	{
-		append_ops(op, b->op[PUSH], &(a->head), &(b->head));
-		amount--;
-	}
-}
 
 int get_pos(t_stack *stack, int value)
 {
@@ -104,44 +38,6 @@ int get_pos(t_stack *stack, int value)
 		tmp = tmp->next;
 	}
 	return (0);
-}
-
-void rotate_to_top(t_op **op, t_info *stack, int pos)
-{
-	int stack_size;
-
-	stack_size = get_size(stack->head);
-	if (pos == stack_size + 1 || pos == 0)
-		return;
-	if (pos > stack_size / 2)
-	{
-		while (pos++ < stack_size + 1)
-			append_ops(op, stack->op[R_ROT], &(stack->head), &(stack->head));
-	}
-	else
-	{
-		while (pos-- > 1)
-			append_ops(op, stack->op[ROT], &(stack->head), &(stack->head));
-	}
-}
-
-void rotate_to_bottom(t_op **op, t_info *stack, int pos)
-{
-	int stack_size = get_size(stack->head);
-
-	if (pos < stack_size / 2)
-	{
-		while (pos > 0)
-		{
-			append_ops(op, stack->op[ROT], &(stack->head), &(stack->head));
-			pos--;
-		}
-		return;
-	}
-	while (pos > 0 && pos++ < stack_size)
-	{
-		append_ops(op, stack->op[R_ROT], &(stack->head), &(stack->head));
-	}
 }
 
 t_stack *copy_stack(t_stack *stack, int amount)
@@ -165,156 +61,6 @@ t_stack *copy_stack(t_stack *stack, int amount)
 		return head;
 	}
 	return (NULL);
-}
-
-// DESC:smaller_value , ASC:bigger_value
-int get_value(t_stack *stack, int value, int order)
-{
-	int hold;
-
-	while (stack)
-	{
-		if (stack->value > value && order == ASC)
-			return stack->value;
-		if (stack->value < value && order == DESC)
-			return stack->value;
-		stack = stack->next;
-	}
-	return (value);
-}
-
-void insert_value_helper(t_stack **stack, t_stack *new_value, int order)
-{
-	t_stack *tmp;
-	t_stack *hold;
-
-	hold = NULL;
-	tmp = *stack;
-	while (tmp)
-	{
-		if (new_value->value == tmp->value)
-		{
-			free(new_value);
-			return;
-		}
-		if ((new_value->value > tmp->value && order == DESC) ||
-			(new_value->value < tmp->value && order == ASC))
-			break;
-		hold = tmp;
-		tmp = tmp->next;
-	}
-	if (hold == NULL)
-	{
-		new_value->next = tmp;
-		*stack = new_value;
-	}
-	else
-	{
-		hold->next = new_value;
-		new_value->next = tmp;
-	}
-}
-
-void insert_value(t_stack **stack, int value, int order)
-{
-	t_stack *tmp;
-	t_stack *new_value;
-
-	tmp = *stack;
-	new_value = create_new_element(value);
-	if (!new_value)
-		exit(1);
-	if (!(*stack))
-		*stack = new_value;
-	else
-		insert_value_helper(stack, new_value, order);
-}
-
-void update_info(t_info *stack)
-{
-	stack->sorted_amount = get_size(stack->sorted);
-	if (!stack->sorted_amount)
-	{
-		stack->min = 0;
-		stack->max = 0;
-		return;
-	}
-	stack->min = get_min(stack->sorted);
-	stack->max = get_max(stack->sorted);
-}
-
-void merge_to_b(t_op **op, t_info *a, t_info *b, int amount)
-{
-	if (b->sorted_amount == 0)
-	{
-		push_to_b(op, a, b, amount);
-		solve_three(op, b, amount);
-		b->sorted = copy_stack(b->head, amount);
-	}
-	while (amount > 0 && b->sorted_amount != 0)
-	{
-		update_info(b);
-		if ((a->head)->value < b->min || (a->head)->value > b->max)
-			rotate_to_top(op, b, get_pos(b->head, b->max));
-		else
-			rotate_to_top(op, b, get_pos(b->head, get_value(b->sorted, a->head->value, DESC)));
-		insert_value(&(b->sorted), a->head->value, DESC);
-		append_ops(op, b->op[PUSH], &(a->head), &(b->head));
-		amount--;
-	}
-	update_info(b);
-}
-
-void merge_to_a(t_op **op, t_info *a, t_info *b)
-{
-	update_info(a);
-	rotate_to_top(op, b, get_pos(b->head, b->max));
-	while (b->head)
-	{
-		if (b->head->value > a->max)
-			rotate_to_bottom(op, a, get_pos(a->head, a->max));
-		else
-			rotate_to_top(op, a, get_pos(a->head, get_value(a->sorted, b->head->value, ASC)));
-		insert_value(&(a->sorted), b->head->value, ASC);
-		append_ops(op, a->op[PUSH], &(a->head), &(b->head));
-		update_info(a);
-	}
-	rotate_to_top(op, a, get_pos(a->head, a->min));
-	delete_stack(&(b->sorted));
-	update_info(b);
-}
-
-void merge(t_op **op, t_info *a, t_info *b)
-{
-	int a_size = get_size(a->head);
-	int remainder = 3;
-	int rotate;
-
-	solve_three(op, a, 3);
-	a->sorted = copy_stack(a->head, 3);
-	a->sorted_amount = 3;
-	while (a->sorted_amount < a_size)
-	{
-		while (b->sorted_amount < a->sorted_amount)
-		{
-			if (a_size - a->sorted_amount - b->sorted_amount < 3)
-				remainder = a_size - a->sorted_amount - b->sorted_amount;
-			if (remainder <= 0)
-				break;
-			rotate = remainder;
-			while (rotate-- > 0)
-				append_ops(op, a->op[R_ROT], &(a->head), &(b->head));
-			if (!(b->head))
-			{
-				merge_to_b(op, a, b, remainder);
-				continue;
-			}
-			// solve_three(op, a, remainder);
-			merge_to_b(op, a, b, remainder);
-		}
-		merge_to_a(op, a, b);
-	}
-	delete_stack(&(a->sorted));
 }
 
 void initialize_info(t_info *stack, char name)
@@ -354,7 +100,7 @@ int split_stack(t_op **op, t_info *a, t_info *b, int stack_size)
 	if (b->splitted == 1)
 		container = a;
 	while (other_stack_size-- > 0)
-		append_ops(op, container->op[PUSH], &(a->head), &(b->head));
+		process_and_print_op(op, container->op[PUSH], &(a->head), &(b->head));
 	a->splitted = 0;
 	b->splitted = 0;
 	return (stack_size / 2);
@@ -385,7 +131,7 @@ t_stack *retrieve_node(t_stack **stack, int value)
 	return tmp;
 }
 
-int get_value_test(t_stack *stack, int value, int order)
+long get_value(t_stack *stack, int value, int order)
 {
 	long hold;
 
@@ -403,149 +149,178 @@ int get_value_test(t_stack *stack, int value, int order)
 	return hold;
 }
 
-void merge_to_stack_b(t_op **op, t_info *a, t_info *b)
+void print_op_test(t_op *op)
 {
-	int a_size;
-	int value;
-	int min;
-	int max;
-	t_stack *hold;
-
-	a_size = get_size(*(a->hold));
-	while (a_size-- > 0)
+	while (op)
 	{
-		value = a->head->value;
-		min = get_min(*(b->hold));
-		max = get_max(*(b->hold));
-		if (value > max)
-			rotate_to_top(op, b, get_pos(b->head, max));
-		else if (value < min)
-			rotate_to_bottom(op, b, get_pos(b->head, min));
+		if (op->op[0] != '0')
+			printf("%s%s%s ", GREEN, op->op, WHITE);
 		else
-			rotate_to_top(op, b, get_pos(b->head, get_value_test(*(b->hold), value, DESC)));
-		append_ops(op, b->op[PUSH], &(a->head), &(b->head));
-		hold = retrieve_node(a->hold, value);
-		push(b->hold, &hold);
+			printf("%s%s%s ", MAGENTA, op->op, WHITE);
+		op = op->next;
 	}
+	printf("\n");
+
+	// while (op)
+	// {
+	// 	if (op->op[0] != '0')
+	// 		printf("%s\n", op->op);
+	// 	op = op->next;
+	// }
 }
 
-void merge_to_stack_a(t_op **op, t_info *a, t_info *b)
-{
-	int b_size;
-	int value;
-	int max;
-	t_stack *hold;
+// void cancel_instruction_helper(t_op *op, char *instruction, char *counter)
+// {
+// 	t_op *tmp = op;
 
-	rotate_to_top(op, b, get_pos(b->head, get_max(*(b->hold))));
-	b_size = get_size(*(b->hold));
-	while (b_size-- > 0)
-	{
-		value = b->head->value;
-		max = get_max(*(a->hold));
-		if (value > max)
-			rotate_to_bottom(op, a, get_pos(a->head, max));
-		else
-			rotate_to_top(op, a, get_pos(a->head, get_value_test(*(a->hold), value, ASC)));
-		append_ops(op, a->op[PUSH], &(a->head), &(b->head));
-		hold = retrieve_node(b->hold, value);
-		push(a->hold, &hold);
-	}
-	rotate_to_top(op, a, get_pos(a->head, get_min(*(a->hold))));
-}
+// 	op = op->next;
+// 	while (op)
+// 	{
+// 		if (!ft_strcmp(op->op, counter))
+// 		{
+// 			tmp->op = "0";
+// 			op->op = "0";
+// 			return;
+// 		}
+// 		else if (op->stack == tmp->stack)
+// 			return;
+// 		op = op->next;
+// 	}
+// }
 
-t_stack *stack_b(t_op **op, t_info *a, t_info *b, int stack_size)
-{
-	t_stack *on_a;
-	t_stack *on_b;
-	int container_size;
-
-	on_a = NULL;
-	on_b = NULL;
-	if (stack_size <= 3)
-	{
-		solve_three(op, b, stack_size);
-		on_b = copy_stack(b->head, stack_size);
-		return on_b;
-	}
-	b->splitted = 1;
-	container_size = split_stack(op, a, b, stack_size);
-	stack_size = stack_size - container_size;
-	on_b = stack_b(op, a, b, stack_size);
-	on_a = stack_a(op, a, b, container_size);
-	a->hold = &on_a;
-	b->hold = &on_b;
-	merge_to_stack_b(op, a, b);
-	return on_b;
-}
-
-t_stack *stack_a(t_op **op, t_info *a, t_info *b, int stack_size)
-{
-	t_stack *on_a;
-	t_stack *on_b;
-	int container_size;
-
-	on_a = NULL;
-	on_b = NULL;
-	if (stack_size <= 3)
-	{
-		solve_three(op, a, stack_size);
-		on_a = copy_stack(a->head, stack_size);
-		return on_a;
-	}
-	a->splitted = 1;
-	container_size = split_stack(op, a, b, stack_size);
-	stack_size = stack_size - container_size;
-	on_b = stack_b(op, a, b, container_size);
-	on_a = stack_a(op, a, b, stack_size);
-	a->hold = &on_a;
-	b->hold = &on_b;
-	merge_to_stack_a(op, a, b);
-	return on_a;
-}
-
-void merge_test(t_op **op, t_info *a, t_info *b, int stack_size)
-{
-	t_stack *sorted;
-
-	sorted = stack_a(op, a, b, stack_size);
-	delete_stack(&sorted);
-}
-
-// t_op *clean_instruction(t_op *op, t_op *next)
+// void cancel_instruction(t_op *op)
 // {
 // 	t_op *tmp;
 
 // 	tmp = op;
-// 	while (tmp->next)
-// 	{
-// 		printf("%s\n", tmp->op);
-// 		tmp = tmp->next;
-// 	}
-// 	printf("\n");
-// 	tmp->next = next;
-// 	return next;
-// }
-
-// void optimize_instruction(t_op **op)
-// {
-// 	int pos = 1;
-// 	t_op *tmp = *op;
-// 	t_op *hold = NULL;
-
 // 	while (tmp)
 // 	{
-// 		if (!ft_strcmp("pa", tmp->op) || !ft_strcmp("pb", tmp->op))
-// 		{
-// 			write(1, tmp->op, 2);
-// 			write(1, "\n", 1);
-// 			free(hold);
-// 		}
-// 		else
-		
-// 		hold = tmp;
+// 		if (!ft_strcmp("ra", tmp->op))
+// 			cancel_instruction_helper(tmp, "ra", "rra");
+// 		else if (!ft_strcmp("rb", tmp->op))
+// 			cancel_instruction_helper(tmp, "rb", "rrb");
+// 		else if (!ft_strcmp("rra", tmp->op))
+// 			cancel_instruction_helper(tmp, "rra", "ra");
+// 		else if (!ft_strcmp("rrb", tmp->op))
+// 			cancel_instruction_helper(tmp, "rrb", "rb");
 // 		tmp = tmp->next;
 // 	}
 // }
+
+void print_instruction_final(t_op *op)
+{
+	t_op *hold;
+	t_op *tmp;
+
+	if (op->next == NULL)
+		return;
+	while (op)
+	{
+		if (op->op[0] != '0' && ft_strlen(op->op) < 3)
+		{
+			tmp = op;
+			if (op->op[0] == 's' && op->op[1] == 'a')
+			{
+				while (tmp)
+				{
+					if (tmp->op[0] == 's' && tmp->op[1] == 'b')
+					{
+						op->op = "ss";
+						tmp->op = "0";
+						break;
+					}
+					tmp = tmp->next;
+				}
+			}
+			else if (op->op[0] == 's' && op->op[1] == 'b')
+			{
+				while (tmp)
+				{
+					if (tmp->op[0] == 's' && tmp->op[1] == 'a')
+					{
+						op->op = "ss";
+						tmp->op = "0";
+						break;
+					}
+					tmp = tmp->next;
+				}
+			}
+			else if (op->op[0] == 'r' && op->op[1] == 'a')
+			{
+				while (tmp)
+				{
+					if (tmp->op[0] == 'r' && tmp->op[1] == 'b')
+					{
+						op->op = "rr";
+						tmp->op = "0";
+						break;
+					}
+					tmp = tmp->next;
+				}
+			}
+			else if (op->op[0] == 'r' && op->op[1] == 'b')
+			{
+				while (tmp)
+				{
+					if (tmp->op[0] == 'r' && tmp->op[1] == 'a')
+					{
+						op->op = "rr";
+						tmp->op = "0";
+						break;
+					}
+					tmp = tmp->next;
+				}
+			}
+		}
+		op = op->next;
+	}
+}
+
+t_op *clean_instruction(t_op *op)
+{
+	t_op *tmp;
+	t_op *hold;
+
+	tmp = op;
+	hold = NULL;
+	while (tmp)
+	{
+		if (!ft_strcmp("pa", tmp->op) || !ft_strcmp("pb", tmp->op))
+			break;
+		hold = tmp;
+		tmp = tmp->next;
+	}
+	hold->next = NULL;
+	// cancel_instruction(op);
+	// print_instruction_final(op);
+	print_op_test(op);
+	return tmp;
+}
+
+void optimize_instruction(t_op **op)
+{
+	int pos = 1;
+	t_op *tmp = *op;
+	t_op *hold = NULL;
+
+	while (tmp)
+	{
+		if (tmp->op[0] == 'p')
+		{
+			hold = tmp;
+			tmp = tmp->next;
+			// printf("%s\n", hold->op);
+			free(hold);
+			continue;
+		}
+		else
+		{
+			tmp = clean_instruction(tmp);
+			continue;
+		}
+		tmp = tmp->next;
+	}
+}
 
 int main(int argc, char *argv[])
 {
@@ -562,53 +337,34 @@ int main(int argc, char *argv[])
 		write(2, "Error\n", 6);
 	else
 	{
+		global_count = 1;
 		print_intial_a(g_a.head);
 		// print_2_stacks(g_a.head, g_b.head);
-		merge_test(&op, &g_a, &g_b, get_size(g_a.head));
-
+		merge_sort(&op, &g_a, &g_b, get_size(g_a.head));
+		// print_op_test(op);
 		// optimize_instruction(&op);
 
-		// global_count--;
-		// if (is_stack_sorted(&(g_a.head)) && !(g_b.head))
-		// 	printf("%sSORTED%s %d\n%s", GREEN, YELLOW, global_count, WHITE);
-		// else
-		// 	printf("%sNOT SORTED%s %d%s\n", RED, YELLOW, global_count, WHITE);
 
-		// t_op *tmp = op;
-		// while (tmp)
-		// {
-		// 	if (!ft_strcmp(tmp->op, "pb") || !ft_strcmp(tmp->op, "pa"))
-		// 		printf("%s%d: %s%s%s\n", MAGENTA, pos, RED, tmp->op, WHITE);
-		// 	else
-		// 		printf("%s%d: %s%s%s\n", MAGENTA, pos, YELLOW, tmp->op, WHITE);
-		// 	pos++;
-		// 	tmp = tmp->next;
-		// }
+		t_op *tmp = op;
+		while (tmp)
+		{
+			if (!ft_strcmp(tmp->op, "pb") || !ft_strcmp(tmp->op, "pa"))
+				printf("%s%d: %s%s%s\n", MAGENTA, pos, RED, tmp->op, WHITE);
+			else
+				printf("%s%d: %s%s%s\n", MAGENTA, pos, YELLOW, tmp->op, WHITE);
+			pos++;
+			tmp = tmp->next;
+		}
+		if (is_stack_sorted(&(g_a.head)) && !(g_b.head))
+			printf("%sSORTED%s %d\n%s", GREEN, YELLOW,pos, WHITE);
+		else
+			printf("%sNOT SORTED%s %d%s\n", RED, YELLOW, pos, WHITE);
 	}
 	exit(1);
 	return (1);
 }
 
 /* later use */
-
-int is_sorted(t_stack *stack, int order)
-{
-	int value;
-
-	if (!stack)
-		return (1);
-	value = stack->value;
-	while (stack)
-	{
-		if (value < stack->value && order == DESC)
-			return (0);
-		else if (value > stack->value && order == ASC)
-			return (0);
-		value = stack->value;
-		stack = stack->next;
-	}
-	return (1);
-}
 
 int get_size(t_stack *stack)
 {
@@ -690,7 +446,6 @@ void print_op(t_op *op)
 	int index = 0;
 	while (tmp)
 	{
-		// printf("%s ", tmp->op);
 		tmp = tmp->next;
 		index++;
 	}
@@ -708,161 +463,4 @@ void print_intial_a(t_stack *a)
 		tmp = tmp->next;
 	}
 	printf("\n%s", WHITE);
-}
-
-void append_ops(t_op **head, char *op, t_stack **a, t_stack **b)
-{
-	// if (!ft_strcmp(op, "pb") || !ft_strcmp(op, "pa"))
-	// 	printf("%s%d: %s%s%s\n", MAGENTA, global_count, RED, op, WHITE);
-	// else
-	// 	printf("%s%d: %s%s%s\n", MAGENTA, global_count, YELLOW, op, WHITE);
-
-	// printf("%s%s%s\n", YELLOW, op, WHITE);
-	// printf("%s\n", op);
-
-	// global_count++;
-	t_op *tmp;
-	t_op *new;
-	void (*op_array[9])(t_stack **);
-
-	assign_index_for_op(op_array);
-	if (!apply_op(op_array, op, a, b))
-		exit(1);
-
-	// printf("%s---------------%s", CYAN, WHITE);
-	// if (!ft_strcmp(op, "pb") || !ft_strcmp(op, "pa"))
-	// 	printf(" %s%5d: %s%3s%s ", MAGENTA, global_count, RED, op, WHITE);
-	// else
-	// 	printf(" %s%5d: %s%3s%s ", MAGENTA, global_count, YELLOW, op, WHITE);
-	// printf("%s---------------%s\n", CYAN, WHITE);
-	// print_2_stacks(g_a.head, g_b.head);
-	// printf("\n");
-
-	global_count++;
-	tmp = *head;
-	new = (t_op *)malloc(sizeof(t_op));
-	if (!new)
-		return;
-	new->op = op;
-	new->next = NULL;
-	while (tmp)
-	{
-		if (tmp->next == NULL)
-		{
-			tmp->next = new;
-			return;
-		}
-		tmp = tmp->next;
-	}
-	if (!tmp)
-		*head = new;
-}
-
-/* solve_three -- almost normed */
-
-void solve_stack_of_three(t_op **op, t_info *stack)
-{
-	int size;
-	int first;
-	int second;
-	int third;
-
-	size = get_size(stack->head);
-	while (size == 3)
-	{
-		first = stack->head->value;
-		second = stack->head->next->value;
-		third = stack->head->next->next->value;
-		if ((second > first && second > third && stack->name == 'a') ||
-			(second < first && second < third && stack->name == 'b'))
-			append_ops(op, stack->op[R_ROT], &(stack->head), &(stack->head));
-		else if ((first > third && first > second && stack->name == 'a') ||
-				 (first < third && first < second && stack->name == 'b'))
-			append_ops(op, stack->op[ROT], &(stack->head), &(stack->head));
-		else if ((second < first && stack->name == 'a') ||
-				 (second > first && stack->name == 'b'))
-			append_ops(op, stack->op[SWAP], &(stack->head), &(stack->head));
-		else
-			return;
-	}
-}
-
-void solve_top_three_helper(t_op **op, t_info *stack)
-{
-	int first;
-	int second;
-	int third;
-
-	first = stack->head->value;
-	second = stack->head->next->value;
-	third = stack->head->next->next->value;
-	append_ops(op, stack->op[ROT], &(stack->head), &(stack->head));
-	append_ops(op, stack->op[SWAP], &(stack->head), &(stack->head));
-	append_ops(op, stack->op[R_ROT], &(stack->head), &(stack->head));
-	if ((first < second && second > third && first > third && stack->name == 'a') || (first > second && second < third && first < third && stack->name == 'b'))
-		append_ops(op, stack->op[SWAP], &(stack->head), &(stack->head));
-	else if ((third < second && second < first && stack->name == 'a') || (third > second && second > first && stack->name == 'b'))
-	{
-		append_ops(op, stack->op[SWAP], &(stack->head), &(stack->head));
-		append_ops(op, stack->op[ROT], &(stack->head), &(stack->head));
-		append_ops(op, stack->op[SWAP], &(stack->head), &(stack->head));
-		append_ops(op, stack->op[R_ROT], &(stack->head), &(stack->head));
-	}
-}
-
-void solve_top_three(t_op **op, t_info *stack)
-{
-	int first;
-	int second;
-	int third;
-
-	first = stack->head->value;
-	second = stack->head->next->value;
-	third = stack->head->next->next->value;
-	if ((first < second && second < third && stack->name == 'a') || (first > second && second > third && stack->name == 'b'))
-		return;
-	else if ((first > second && second < third && third > first && stack->name == 'a') || (first < second && second > third && third < first && stack->name == 'b'))
-		append_ops(op, stack->op[SWAP], &(stack->head), &(stack->head));
-	else if ((first > second && first > third && second < third && stack->name == 'a') || (first < second && first < third && second > third && stack->name == 'b'))
-	{
-		append_ops(op, stack->op[SWAP], &(stack->head), &(stack->head));
-		append_ops(op, stack->op[ROT], &(stack->head), &(stack->head));
-		append_ops(op, stack->op[SWAP], &(stack->head), &(stack->head));
-		append_ops(op, stack->op[R_ROT], &(stack->head), &(stack->head));
-	}
-	else
-		solve_top_three_helper(op, stack);
-}
-
-void solve_three(t_op **op, t_info *stack, int amount)
-{
-	int size;
-
-	size = get_size(stack->head);
-	if (amount == 1 || size == 1)
-		return;
-	if (amount <= 2 && size >= 2)
-	{
-		if ((stack->head->value > stack->head->next->value && stack->name == 'a') ||
-			(stack->head->value < stack->head->next->value && stack->name == 'b'))
-			append_ops(op, stack->op[SWAP], &(stack->head), &(stack->head));
-		return;
-	}
-	if (size == 3)
-		solve_stack_of_three(op, stack);
-	else
-		solve_top_three(op, stack);
-}
-
-void solve_five(t_op **op, t_info *a, t_info *b)
-{
-	rotate_to_top(op, a, get_pos(a->head, get_min(a->head)));
-	append_ops(op, b->op[PUSH], &(a->head), &(b->head));
-	rotate_to_top(op, a, get_pos(a->head, get_min(a->head)));
-	append_ops(op, b->op[PUSH], &(a->head), &(b->head));
-	solve_three(op, a, 3);
-	solve_three(op, a, 2);
-	append_ops(op, a->op[PUSH], &(a->head), &(b->head));
-	append_ops(op, a->op[PUSH], &(a->head), &(b->head));
-	b->sorted_amount = 5;
 }

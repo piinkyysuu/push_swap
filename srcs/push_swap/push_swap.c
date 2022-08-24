@@ -6,7 +6,7 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/06 11:40:01 by thule             #+#    #+#             */
-/*   Updated: 2022/08/01 16:15:10 by thle             ###   ########.fr       */
+/*   Updated: 2022/08/24 18:40:14 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,7 @@ void print_ops(t_op *head)
 	printf("\n");
 }
 
-void append_ops(t_op **head, char *op, t_stack **a, t_stack **b)
+void process_and_print_op(t_op **head, char *op, t_stack **a, t_stack **b)
 {
 	printf("%s%s%s\n", GREEN, op, WHITE);
 	t_op *tmp;
@@ -206,16 +206,16 @@ void best_to_top_a(int pos, t_op **op, t_stack **stack, int amount)
 	if (pos == 1)
 		return;
 	else if (pos == 2)
-		append_ops(op, "sa", stack, NULL);
+		process_and_print_op(op, "sa", stack, NULL);
 	else if (pos < (amount / 2) + 1)
 	{
 		while (amount > (pos++))
-			append_ops(op, "ra", stack, NULL);
+			process_and_print_op(op, "ra", stack, NULL);
 	}
 	else if (pos >= (amount / 2) + 1)
 	{
 		while (amount + 1 > (pos++))
-			append_ops(op, "rra", stack, NULL);
+			process_and_print_op(op, "rra", stack, NULL);
 	}
 }
 
@@ -224,16 +224,16 @@ void best_to_top_b(int pos, t_op **op, t_stack **stack, int amount)
 	if (pos == 1)
 		return;
 	else if (pos == 2)
-		append_ops(op, "sb", NULL, stack);
+		process_and_print_op(op, "sb", NULL, stack);
 	else if (pos < (amount / 2) + 1)
 	{
 		while (amount > (pos++))
-			append_ops(op, "rb", NULL, stack);
+			process_and_print_op(op, "rb", NULL, stack);
 	}
 	else if (pos >= (amount / 2) + 1)
 	{
 		while (amount + 1 > (pos++))
-			append_ops(op, "rrb", NULL, stack);
+			process_and_print_op(op, "rrb", NULL, stack);
 	}
 }
 
@@ -249,11 +249,11 @@ void solve_stack_of_3(t_op **op, t_content *a)
 		second = ((a->head)->next)->value;
 		last = ((a->head)->next->next)->value;
 		if (second > first && second > last)
-			append_ops(op, "rra", &(a->head), NULL);
+			process_and_print_op(op, "rra", &(a->head), NULL);
 		else if (first > last && first > second)
-			append_ops(op, "ra", &(a->head), NULL);
+			process_and_print_op(op, "ra", &(a->head), NULL);
 		else if (second < first)
-			append_ops(op, "sa", &(a->head), NULL);
+			process_and_print_op(op, "sa", &(a->head), NULL);
 		else
 			break;
 	}
@@ -294,12 +294,12 @@ void solve_stack_of_5(t_op **op, t_content *a, t_content *b)
 	{
 		smallest_pos = find_pos_of_smallest(a->head);
 		best_to_top_a(smallest_pos, op, &(a->head), a->amount);
-		append_ops(op, "pb", &(a->head), &(b->head));
+		process_and_print_op(op, "pb", &(a->head), &(b->head));
 		get_stats(a);
 	}
 	solve_stack_of_3(op, a);
 	while (b->head && amount-- > 0)
-		append_ops(op, "pa", &(a->head), &(b->head));
+		process_and_print_op(op, "pa", &(a->head), &(b->head));
 }
 
 void find_less_than_mid(t_stack *head, int amount, int mid, int *pos)
@@ -383,50 +383,49 @@ void push_to_range(t_op **op, t_content *a, t_content *b)
 	if (b->amount < 3)
 	{
 		if (b->amount == 0 || (b->head)->value < (a->head)->value)
-			append_ops(op, "pb", &(a->head), &(b->head));
+			process_and_print_op(op, "pb", &(a->head), &(b->head));
 		else if (b->amount == 1)
 		{
-			append_ops(op, "pb", &(a->head), &(b->head));
+			process_and_print_op(op, "pb", &(a->head), &(b->head));
 			if ((b->head)->value < (b->head->next)->value)
-				append_ops(op, "sb", &(a->head), &(b->head));
+				process_and_print_op(op, "sb", &(a->head), &(b->head));
 		}
 		else
 		{
 			if ((a->head)->value < (b->head->next)->value)
 			{
-				append_ops(op, "pb", &(a->head), &(b->head));
-				append_ops(op, "rb", &(a->head), &(b->head));
+				process_and_print_op(op, "pb", &(a->head), &(b->head));
+				process_and_print_op(op, "rb", &(a->head), &(b->head));
 			}
 			else
 			{
-				append_ops(op, "pb", &(a->head), &(b->head));
-				append_ops(op, "sb", &(a->head), &(b->head));
+				process_and_print_op(op, "pb", &(a->head), &(b->head));
+				process_and_print_op(op, "sb", &(a->head), &(b->head));
 			}
 		}
-		return ;
+		return;
 	}
 	pos = find_range_position(b, (a->head)->value);
 	if (pos == 1 || pos == 0 || pos == b->amount + 1)
-		append_ops(op, "pb", &(a->head), &(b->head));
+		process_and_print_op(op, "pb", &(a->head), &(b->head));
 	else if (pos < ((b->amount / 2) + 1))
 	{
 		while (pos - 1)
 		{
-			append_ops(op, "rb", &(a->head), &(b->head));
+			process_and_print_op(op, "rb", &(a->head), &(b->head));
 			pos--;
 		}
-		append_ops(op, "pb", &(a->head), &(b->head));
+		process_and_print_op(op, "pb", &(a->head), &(b->head));
 	}
 	else if (pos >= ((b->amount / 2) + 1))
 	{
 		while ((b->amount - pos) + 1)
 		{
-			append_ops(op, "rrb", &(a->head), &(b->head));
+			process_and_print_op(op, "rrb", &(a->head), &(b->head));
 			pos++;
 		}
-		append_ops(op, "pb", &(a->head), &(b->head));
+		process_and_print_op(op, "pb", &(a->head), &(b->head));
 	}
-	
 }
 
 void bring_max_to_top(t_op **op, t_content *b)
@@ -445,7 +444,7 @@ void bring_max_to_top(t_op **op, t_content *b)
 	{
 		while ((b->amount - pos) + 1)
 		{
-			append_ops(op, "rrb", NULL, &(b->head));
+			process_and_print_op(op, "rrb", NULL, &(b->head));
 			pos++;
 		}
 	}
@@ -453,7 +452,7 @@ void bring_max_to_top(t_op **op, t_content *b)
 	{
 		while (pos - 1)
 		{
-			append_ops(op, "rb", NULL, &(b->head));
+			process_and_print_op(op, "rb", NULL, &(b->head));
 			pos--;
 		}
 	}
@@ -478,7 +477,7 @@ void solve_stack_of_med(t_op **op, t_content *a, t_content *b)
 		if (pos[0] < a->amount / 2)
 			chosen = pos[0];
 		best_to_top_a(chosen, op, &(a->head), a->amount);
-		push_to_range(op, a ,b);
+		push_to_range(op, a, b);
 
 		(a->amount)--;
 		find_less_than_mid(a->head, a->amount, median, pos);
@@ -487,31 +486,30 @@ void solve_stack_of_med(t_op **op, t_content *a, t_content *b)
 	solve_stack_of_5(op, a, b);
 
 	print_2_stacks(a->head, b->head);
-	
+
 	t_stack *tmp;
 
-	
 	while (b->head)
 	{
 		get_stats(a);
 		tmp = a->head;
 		if ((b->head)->value > a->max)
 		{
-			append_ops(op, "pa", &(a->head), &(b->head));
-			append_ops(op, "ra", &(a->head), &(b->head));
+			process_and_print_op(op, "pa", &(a->head), &(b->head));
+			process_and_print_op(op, "ra", &(a->head), &(b->head));
 			continue;
 		}
 		while (tmp->next)
 			tmp = tmp->next;
 		if (tmp->value < a->head->value && tmp->value > (b->head)->value)
 		{
-			append_ops(op, "rra", &(a->head), &(b->head));
+			process_and_print_op(op, "rra", &(a->head), &(b->head));
 			continue;
 		}
 		while (a->head && a->head->value < b->head->value)
-			append_ops(op, "ra", &(a->head), &(b->head));
-		append_ops(op, "pa", &(a->head), &(b->head));
-		
+			process_and_print_op(op, "ra", &(a->head), &(b->head));
+		process_and_print_op(op, "pa", &(a->head), &(b->head));
+
 		print_2_stacks(a->head, b->head);
 	}
 }
@@ -553,22 +551,22 @@ int main(int argc, char *argv[])
 			else
 			{
 				// if ((a.head)->value > (a.head->next)->value)
-				// 	append_ops(&op, "sa", &(a.head), &(b.head));
-				// append_ops(&op, "pb", &(a.head), &(b.head));
-				// append_ops(&op, "pb", &(a.head), &(b.head));
+				// 	process_and_print_op(&op, "sa", &(a.head), &(b.head));
+				// process_and_print_op(&op, "pb", &(a.head), &(b.head));
+				// process_and_print_op(&op, "pb", &(a.head), &(b.head));
 				// int f = (b.head)->value;
 				// int s = (b.head->next)->value;
 				// if ((a.head)->value > f)
-				// 	append_ops(&op, "pb", &(a.head), &(b.head));
+				// 	process_and_print_op(&op, "pb", &(a.head), &(b.head));
 				// else if ((a.head)->value < s)
 				// {
-				// 	append_ops(&op, "pb", &(a.head), &(b.head));
-				// 	append_ops(&op, "rb", &(a.head), &(b.head));
+				// 	process_and_print_op(&op, "pb", &(a.head), &(b.head));
+				// 	process_and_print_op(&op, "rb", &(a.head), &(b.head));
 				// }
 				// else
 				// {
-				// 	append_ops(&op, "pb", &(a.head), &(b.head));
-				// 	append_ops(&op, "sb", &(a.head), &(b.head));
+				// 	process_and_print_op(&op, "pb", &(a.head), &(b.head));
+				// 	process_and_print_op(&op, "sb", &(a.head), &(b.head));
 				// }
 				// print_2_stacks(a.head, b.head);
 
@@ -579,7 +577,7 @@ int main(int argc, char *argv[])
 
 				// for (int i = 0; i < 20; i++)
 				// {
-				// 	append_ops(&op, "pb", &(a.head), &(b.head));
+				// 	process_and_print_op(&op, "pb", &(a.head), &(b.head));
 				// }
 
 				// temp = (b.head)->next;

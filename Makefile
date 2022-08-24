@@ -6,7 +6,7 @@
 #    By: thle <thle@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/23 14:12:18 by thule             #+#    #+#              #
-#    Updated: 2022/08/02 14:21:20 by thle             ###   ########.fr        #
+#    Updated: 2022/08/24 19:11:56 by thle             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ PUSH_SWAP = push_swap
 INCLUDES_DIR = ./includes/
 
 CHECKER_FILES = checker.c
-PUSH_SWAP_FILES = push_swap_v2.c
+PUSH_SWAP_FILES = push_swap_v2.c solve_small_stack.c solve_big_stack.c rotate_utils.c process_and_print_op.c
 SHARED_FILES = operations.c stack_utils.c create_stack.c apply_op.c
 
 CHECKER_SRC_DIR = ./srcs/checker/
