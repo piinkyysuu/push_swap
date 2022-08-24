@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shared.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
+/*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 14:46:18 by thule             #+#    #+#             */
-/*   Updated: 2022/07/15 18:54:39 by thule            ###   ########.fr       */
+/*   Updated: 2022/08/24 18:00:23 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 #define MAGENTA "\x1B[35m"
 #define CYAN "\x1B[36m"
 #define WHITE "\x1B[37m"
+
+#define OP_INDEX "000111222"
 
 typedef struct s_stack
 {
@@ -44,6 +46,14 @@ enum e_instructions
 	pb
 };
 
+enum e_op
+{
+	SWAP,
+	ROT,
+	R_ROT,
+	PUSH
+};
+
 /* operations.c */
 void swap(t_stack **head);
 void rotate(t_stack **head);
@@ -62,5 +72,4 @@ void print_2_stacks(t_stack *a, t_stack *b);
 int create_stack(int amount, char *array[], t_stack **head);
 
 /* apply_op.c */
-void assign_index_for_op(void (*op_array[9])(t_stack **head));
-int	apply_op(void (*op_array[9])(t_stack **head), char *op, t_stack **a, t_stack **b);
+int	apply_op(char *op, t_stack **a, t_stack **b);

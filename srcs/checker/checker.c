@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   checker.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
+/*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/23 14:39:09 by thule             #+#    #+#             */
-/*   Updated: 2022/07/25 13:04:37 by thule            ###   ########.fr       */
+/*   Updated: 2022/08/24 18:00:01 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 /*
 Central point for reading op_arrays from standard input
-Before any action, assign_index_for_op() gets called
-	to assign function to indexes
 The op_array will be saved in *op
 Call apply_op()
 After reading all op_array(s), is_stack_sorted() gets called
@@ -27,14 +25,12 @@ static int read_then_apply_op(t_stack *a, t_stack *b)
 {
 	char *op;
 	int result;
-	void (*op_array[9])(t_stack **);
 
 	op = NULL;
 	result = 1;
-	assign_index_for_op(op_array);
 	while (get_next_line(0, &op))
 	{
-		if (!apply_op(op_array, op, &a, &b))
+		if (!apply_op(op, &a, &b))
 		{
 			result = -1;
 			ft_strdel(&op);
