@@ -6,7 +6,7 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 13:28:16 by thle              #+#    #+#             */
-/*   Updated: 2022/08/25 18:37:29 by thle             ###   ########.fr       */
+/*   Updated: 2022/08/25 20:22:15 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -341,8 +341,7 @@ int main(int argc, char *argv[])
 		// print_intial_a(g_a.head);
 		// print_2_stacks(g_a.head, g_b.head);
 		merge_sort(&op, &g_a, &g_b, get_size(g_a.head));
-		if (op)
-			print_offical(op);
+		process_and_print_op(&op, "0", &(g_a.head), &(g_b.head));
 		// print_op_test(op);
 		// optimize_instruction(&op);
 
