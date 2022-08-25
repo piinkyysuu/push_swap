@@ -23,6 +23,7 @@ sa
 rra
 pa
 
+ARG=""; ./push_swap $ARG | ./checker $ARG 
 
 5s stacks:
 	2 3 1 4 5 (rra rra rra pb rra rra pb pa pa 9)
