@@ -6,7 +6,7 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 18:51:07 by thle              #+#    #+#             */
-/*   Updated: 2022/08/25 19:25:16 by thle             ###   ########.fr       */
+/*   Updated: 2022/08/25 21:27:01 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void append_op_list(t_op **head, char *op)
 	if (!tmp)
 	{
 		*head = new;
-		return ;
+		return;
 	}
 	while (tmp->next)
 		tmp = tmp->next;
@@ -80,7 +80,7 @@ void delete_list(t_op **head)
 	*head = NULL;
 }
 
-void cancel_instruction_helper(t_op *op, char *instruction, char *counter)
+void cancel_rotate_swap_helper(t_op *op, char *instruction, char *counter)
 {
 	t_op *tmp = op;
 
@@ -107,13 +107,13 @@ void cancel_rotate_swap(t_op *op)
 	while (tmp)
 	{
 		if (!ft_strcmp("ra", tmp->op))
-			cancel_instruction_helper(tmp, "ra", "rra");
+			cancel_rotate_swap_helper(tmp, "ra", "rra");
 		else if (!ft_strcmp("rb", tmp->op))
-			cancel_instruction_helper(tmp, "rb", "rrb");
+			cancel_rotate_swap_helper(tmp, "rb", "rrb");
 		else if (!ft_strcmp("rra", tmp->op))
-			cancel_instruction_helper(tmp, "rra", "ra");
+			cancel_rotate_swap_helper(tmp, "rra", "ra");
 		else if (!ft_strcmp("rrb", tmp->op))
-			cancel_instruction_helper(tmp, "rrb", "rb");
+			cancel_rotate_swap_helper(tmp, "rrb", "rb");
 		tmp = tmp->next;
 	}
 }
@@ -122,7 +122,7 @@ t_op *split_instructions(t_op *first)
 {
 	int first_char;
 	t_op *hold;
-	
+
 	hold = NULL;
 	while (first && first->op[0] == '0')
 		first = first->next;
@@ -136,18 +136,70 @@ t_op *split_instructions(t_op *first)
 		{
 			hold = first->next;
 			first->next = NULL;
-			break ;
+			break;
 		}
 		first = first->next;
 	}
 	return (hold);
 }
 
+
+
+void link_first_and_second(t_op *first, t_op *first_tail, t_op *second_head)
+{
+	if (first_tail == NULL)
+	{
+		while (first->next)
+			first = first->next;
+		first_tail = first;
+	}
+	first_tail->next = second_head;
+}
+
+void change_op(t_op *first, t_op *second)
+{
+	second->op = "0";
+	if (first->operation == SWAP)
+		first->op = "ss";
+	else if (first->operation == ROT)
+		first->op = "rr";
+	else if (first->operation == R_ROT)
+		first->op = "rrr";
+	// first = first->next;
+}
+
+
+void combine_op(t_op *first, t_op *second)
+{
+	t_op *second_head;
+	t_op *first_tail;
+
+	second_head = second;
+	first_tail = NULL;
+	while (second && first && second->stack != first->stack)
+	{
+		while (first && second->op[0] != '0')
+		{
+			if (first->next == NULL)
+				first_tail = first;
+			if (first->operation == second->operation && first->op[0] != '0')
+			{
+				change_op(first, second);
+				first = first->next;
+				break;
+			}
+			first = first->next;
+		}
+		second = second->next;
+	}
+	link_first_and_second(first, first_tail, second_head);
+}
+
 void cancel_push(t_op *first, t_op *second)
 {
 	t_op *second_head;
 	t_op *first_tail;
-	
+
 	second_head = second;
 	first_tail = NULL;
 	while (second && first && second->stack != first->stack)
@@ -159,68 +211,24 @@ void cancel_push(t_op *first, t_op *second)
 		second = second->next;
 		first = first->next;
 	}
-	if (first_tail == NULL)
-	{
-		while (first->next)
-			first = first->next;
-		first_tail = first;
-	}
-	first_tail->next = second_head;
+	link_first_and_second(first, first_tail, second_head);
 }
 
 void central_customization(t_op **first)
 {
 	t_op *second;
-	t_op *tmp_second;
-	t_op *tmp_first;
-	t_op *hold;
-	char second_char;
 
-	if (tmp_first->operation != PUSH)
+	if ((*first)->operation != PUSH)
 		cancel_rotate_swap(*first);
 	second = split_instructions(*first);
-	tmp_second = second;
-	tmp_first = *first;
-	hold = NULL;
 	if (second == NULL)
-		return ;
-	if (tmp_first->operation == PUSH)
+		return;
+	if ((*first)->operation == PUSH)
 	{
 		cancel_push(*first, second);
 		return;
 	}
-	second_char = tmp_second->stack;
-	while (tmp_second && tmp_second->stack == second_char)
-	{
-		while (tmp_first && tmp_second->op[0] != '0')
-		{
-			if (tmp_first->next == NULL)
-				hold = tmp_first;
-			if (tmp_second->operation == tmp_first->operation && tmp_first->op[0] != '0')
-			{
-				tmp_second->op = "0";
-				if (tmp_first->operation == SWAP)
-					tmp_first->op = "ss";
-				else if (tmp_first->operation == ROT)
-					tmp_first->op = "rr";
-				else if (tmp_first->operation == R_ROT)
-					tmp_first->op = "rrr";
-				tmp_first = tmp_first->next;
-				break;
-			}
-			tmp_first = tmp_first->next;
-		}
-		if (hold)
-			break;
-		tmp_second = tmp_second->next;
-	}
-	if (hold == NULL)
-	{
-		while (tmp_first->next)
-			tmp_first = tmp_first->next;
-		hold = tmp_first;
-	}
-	hold->next = second;
+	combine_op(*first, second);
 }
 
 void print_offical(t_op *head)
@@ -235,28 +243,20 @@ void print_offical(t_op *head)
 
 void process_and_print_op(t_op **head, char *op, t_stack **a, t_stack **b)
 {
-	if (!apply_op(op, a, b))
-		exit(1);
 	if (op[0] == '0')
 	{
 		print_offical(*head);
 		delete_list(head);
-		return ;
+		return;
 	}
+	if (!apply_op(op, a, b))
+		exit(1);
 	if (*head)
 	{
-		if ((*head)->op[0] == 'p' && op[0] != 'p')
+		if (((*head)->op[0] == 'p' && op[0] != 'p') || 
+		(((*head)->op[0] == 'r' || (*head)->op[0] == 's') && op[0] == 'p'))
 		{
 			central_customization(head);
-			// print_list(*head);
-			print_offical(*head);
-			delete_list(head);
-		}
-		else if (((*head)->op[0] == 'r' || (*head)->op[0] == 's') && op[0] == 'p')
-		{
-			// cancel_instruction(*head);
-			central_customization(head);
-			// print_list(*head);
 			print_offical(*head);
 			delete_list(head);
 		}
