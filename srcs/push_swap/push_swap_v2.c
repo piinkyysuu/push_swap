@@ -6,7 +6,7 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 13:28:16 by thle              #+#    #+#             */
-/*   Updated: 2022/08/24 20:42:37 by thle             ###   ########.fr       */
+/*   Updated: 2022/08/25 18:37:29 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -338,27 +338,29 @@ int main(int argc, char *argv[])
 	else
 	{
 		global_count = 1;
-		print_intial_a(g_a.head);
+		// print_intial_a(g_a.head);
 		// print_2_stacks(g_a.head, g_b.head);
 		merge_sort(&op, &g_a, &g_b, get_size(g_a.head));
+		if (op)
+			print_offical(op);
 		// print_op_test(op);
 		// optimize_instruction(&op);
 
 
-		t_op *tmp = op;
-		while (tmp)
-		{
-			if (!ft_strcmp(tmp->op, "pb") || !ft_strcmp(tmp->op, "pa"))
-				printf("%s%d: %s%s%s\n", MAGENTA, pos, RED, tmp->op, WHITE);
-			else
-				printf("%s%d: %s%s%s\n", MAGENTA, pos, YELLOW, tmp->op, WHITE);
-			pos++;
-			tmp = tmp->next;
-		}
-		if (is_stack_sorted(&(g_a.head)) && !(g_b.head))
-			printf("%sSORTED%s %d\n%s", GREEN, YELLOW,pos, WHITE);
-		else
-			printf("%sNOT SORTED%s %d%s\n", RED, YELLOW, pos, WHITE);
+		// t_op *tmp = op;
+		// while (tmp)
+		// {
+		// 	if (!ft_strcmp(tmp->op, "pb") || !ft_strcmp(tmp->op, "pa"))
+		// 		printf("%s%d: %s%s%s\n", MAGENTA, pos, RED, tmp->op, WHITE);
+		// 	else
+		// 		printf("%s%d: %s%s%s\n", MAGENTA, pos, YELLOW, tmp->op, WHITE);
+		// 	pos++;
+		// 	tmp = tmp->next;
+		// }
+		// if (is_stack_sorted(&(g_a.head)) && !(g_b.head))
+		// 	printf("%sSORTED%s %d\n%s", GREEN, YELLOW,pos, WHITE);
+		// else
+		// 	printf("%sNOT SORTED%s %d%s\n", RED, YELLOW, pos, WHITE);
 	}
 	exit(1);
 	return (1);

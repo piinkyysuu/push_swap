@@ -6,7 +6,7 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 14:46:18 by thule             #+#    #+#             */
-/*   Updated: 2022/08/24 18:00:23 by thle             ###   ########.fr       */
+/*   Updated: 2022/08/25 13:34:38 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,10 +48,10 @@ enum e_instructions
 
 enum e_op
 {
-	SWAP,
-	ROT,
-	R_ROT,
-	PUSH
+	SWAP, //0
+	ROT, //1
+	R_ROT, //2
+	PUSH //3
 };
 
 /* operations.c */

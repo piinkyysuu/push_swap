@@ -6,7 +6,7 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/06 11:46:00 by thule             #+#    #+#             */
-/*   Updated: 2022/08/24 18:47:06 by thle             ###   ########.fr       */
+/*   Updated: 2022/08/25 16:23:24 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ typedef struct s_op
 {
 	char *op;
 	char stack;
+	short int operation;
 	struct s_op *next;
 } t_op;
 
@@ -61,6 +62,7 @@ t_stack *retrieve_node(t_stack **stack, int value);
 t_stack *copy_stack(t_stack *stack, int amount);
 int split_stack(t_op **op, t_info *a, t_info *b, int stack_size);
 
+void print_offical(t_op *head);
 void process_and_print_op(t_op **head, char *op, t_stack **a, t_stack **b);
 
 /* solve_small_stack.c */
