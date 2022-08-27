@@ -63,7 +63,7 @@ Different from checker, push_swap's aim is to produce as small amount of instruc
 
 - After trying a couple of solutions, I had the idea to use Merge Sort as my main algorithm to solve this problem. I have implemented iterative and recursive merge sort, and finally decided to go with recursive version due to its speed and more ways to optimize.
 
-- Problem with recursive merge sort is I only have two stacks at disposal, I need to make sure the size of the splitted stack and the container stack at all time.
+- Problem with recursive merge sort is I only have two stacks at disposal, I need to make sure the size of the splitted stack and the container stack known at all time.
 
 - At the same time with the sort, I keep a copy of which numbers there are on the stack so I can make the least movement when merging the two stacks together. 
 
