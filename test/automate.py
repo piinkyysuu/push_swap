@@ -6,7 +6,7 @@ from subprocess import call
 import subprocess as sp
 import sys
 
-path = '/Users/thle/Desktop/projects/push_swap/'
+path = '/Users/thule/Desktop/projects/push_swap/'
 push_swap = path + 'push_swap'
 checker = path + 'checker'
 
@@ -44,29 +44,14 @@ class colors:
 		cyan = '\033[46m'
 		lightgrey = '\033[47m'
 
-cmdArg = list(sys.argv)
-lenCmdArg = len(cmdArg)
-
-size = 0
-lowInt = -2147483648
-highInt = 2147483647
-
-f = open("test_case", "w")
-f.write("")
-f.close()
-
-maxRes = -1
-minRes = 2147483647
-sumRes = 0
-
-def writeToFile(args):
+def writeToFile(args, x):
 	f = open("test_case", "a")
 	f.write("Case " + str(x) + ": \n")
 	f.write(args)
 	f.write("\n\n")
 	f.close()
 
-def excutePrograms():
+def excutePrograms(args):
 	data = subprocess.Popen([push_swap, args], stdout=subprocess.PIPE)
 	output = data.stdout.read()
 	data.stdout.close()
@@ -77,63 +62,42 @@ def excutePrograms():
 	proc.stdout.close()
 	return (line, res.replace('\n', ''))
 
-def printOutput(size, x, line, res):
-	if res == 'KO':
+def printOutput(size, x, line, res, grade):
+	if res == 'KO' or grade == 0:
 		res = '\033[31m' + res + '\033[0m'
 	else:
 		res = '\033[32m' + res + '\033[0m'
-	grade = 5
 	print('{:2s}{:<5d}|{:>7d}{:3s}|{:3s}{:>4s}{:3s}|{:4d}'.format(' ', x, line, ' ', ' ', res, ' ', grade))
-	for i in range(1, 36):
-		print('_', end='')
-	print('\n')
-
-if size == 500:
-	print("{:10s}{:s}".format(' ', '\033[01m' + '\033[43m' + "ADVANCED VERSION" + '\033[0m'))
-for i in range(1, 36):
-	print('_', end='')
-print('\n')
-
-loopAmount = 20
-
-for x in range(1, loopAmount + 1):
-	args = ' '.join(str(x) for x in random.sample(range(lowInt, highInt), size))
-	writeToFile(args)
-	result = excutePrograms()
-	if result[0] > maxRes:
-		maxRes = result[0]
-	if result[0] < minRes:
-		minRes = result[0]
-	sumRes += result[0]
-	printOutput(size, x, result[0], result[1])
-
-print("maxRes: " + str(maxRes))
-print("minRes: " + str(minRes))
-print("avgRes: " + str(int(sumRes / loopAmount)))
-
 
 def printVersion(size):
 	if size == 3:
-		return "SIMPLE VERSION [3]"
+		version = "SIMPLE VERSION [3]"
 	if size == 5:
-		return "SIMPLE VERSION [5]"
+		version = "SIMPLE VERSION [5]"
 	if size == 100:
-		return "MIDDLE VERSION [100]"
+		version = "MIDDLE VERSION [100]"
 	if size == 500:
-		return "ADVANCED VERSION [500]"
+		version = "ADVANCED VERSION [500]"
+	versionLen = (36 - len(version)) // 2
+	print("{s:<{SHOWLEN}s}".format(s=" ", SHOWLEN=versionLen), end="")
+	print('\u001b[38;5;100m' + version + '\033[0m')
+	for i in range(1, 36):
+		print('_', end='')
+	print('\n')
+	return version
 
 def getGrade(size, res):
 	if size == 3:
 		if res <= 3:
 			return 5
-		else
+		else:
 			return 0
-	if size == 5
+	if size == 5:
 		if res <= 12:
 			return 5
-		else
+		else:
 			return 0
-	if size == 100
+	if size == 100:
 		if res <= 700:
 			return 5
 		elif res <= 900:
@@ -146,7 +110,7 @@ def getGrade(size, res):
 			return 1
 		else:
 			return 0
-	if size == 500
+	if size == 500:
 		if res <= 5500:
 			return 5
 		elif res <= 7000:
@@ -160,3 +124,210 @@ def getGrade(size, res):
 		else:
 			return 0
 
+def startTests(size):
+	lowInt = -2147483648
+	highInt = 2147483647
+	version = printVersion(size)
+	loopAmount = 50
+	sum = 0
+	least = [0, 2147483647] #least[0] = case
+	most = [0, -1]
+	f = open("test_case", "a")
+	f.write(version + "\n")
+	f.close()
+	permutationOfFiveNumbers = [
+		"1 2 3 4 5",
+		"1 2 3 5 4",
+		"1 2 4 3 5",
+		"1 2 4 5 3",
+		"1 2 5 4 3",
+		"1 2 5 3 4",
+		"1 3 2 4 5",
+		"1 3 2 5 4",
+		"1 3 4 2 5",
+		"1 3 4 5 2",
+		"1 3 5 4 2",
+		"1 3 5 2 4",
+		"1 4 3 2 5",
+		"1 4 3 5 2",
+		"1 4 2 3 5",
+		"1 4 2 5 3",
+		"1 4 5 2 3",
+		"1 4 5 3 2",
+		"1 5 3 4 2",
+		"1 5 3 2 4",
+		"1 5 4 3 2",
+		"1 5 4 2 3",
+		"1 5 2 4 3",
+		"1 5 2 3 4",
+		"2 1 3 4 5",
+		"2 1 3 5 4",
+		"2 1 4 3 5",
+		"2 1 4 5 3",
+		"2 1 5 4 3",
+		"2 1 5 3 4",
+		"2 3 1 4 5",
+		"2 3 1 5 4",
+		"2 3 4 1 5",
+		"2 3 4 5 1",
+		"2 3 5 4 1",
+		"2 3 5 1 4",
+		"2 4 3 1 5",
+		"2 4 3 5 1",
+		"2 4 1 3 5",
+		"2 4 1 5 3",
+		"2 4 5 1 3",
+		"2 4 5 3 1",
+		"2 5 3 4 1",
+		"2 5 3 1 4",
+		"2 5 4 3 1",
+		"2 5 4 1 3",
+		"2 5 1 4 3",
+		"2 5 1 3 4",
+		"3 2 1 4 5",
+		"3 2 1 5 4",
+		"3 2 4 1 5",
+		"3 2 4 5 1",
+		"3 2 5 4 1",
+		"3 2 5 1 4",
+		"3 1 2 4 5",
+		"3 1 2 5 4",
+		"3 1 4 2 5",
+		"3 1 4 5 2",
+		"3 1 5 4 2",
+		"3 1 5 2 4",
+		"3 4 1 2 5",
+		"3 4 1 5 2",
+		"3 4 2 1 5",
+		"3 4 2 5 1",
+		"3 4 5 2 1",
+		"3 4 5 1 2",
+		"3 5 1 4 2",
+		"3 5 1 2 4",
+		"3 5 4 1 2",
+		"3 5 4 2 1",
+		"3 5 2 4 1",
+		"3 5 2 1 4",
+		"4 2 3 1 5",
+		"4 2 3 5 1",
+		"4 2 1 3 5",
+		"4 2 1 5 3",
+		"4 2 5 1 3",
+		"4 2 5 3 1",
+		"4 3 2 1 5",
+		"4 3 2 5 1",
+		"4 3 1 2 5",
+		"4 3 1 5 2",
+		"4 3 5 1 2",
+		"4 3 5 2 1",
+		"4 1 3 2 5",
+		"4 1 3 5 2",
+		"4 1 2 3 5",
+		"4 1 2 5 3",
+		"4 1 5 2 3",
+		"4 1 5 3 2",
+		"4 5 3 1 2",
+		"4 5 3 2 1",
+		"4 5 1 3 2",
+		"4 5 1 2 3",
+		"4 5 2 1 3",
+		"4 5 2 3 1",
+		"5 2 3 4 1",
+		"5 2 3 1 4",
+		"5 2 4 3 1",
+		"5 2 4 1 3",
+		"5 2 1 4 3",
+		"5 2 1 3 4",
+		"5 3 2 4 1",
+		"5 3 2 1 4",
+		"5 3 4 2 1",
+		"5 3 4 1 2",
+		"5 3 1 4 2",
+		"5 3 1 2 4",
+		"5 4 3 2 1",
+		"5 4 3 1 2",
+		"5 4 2 3 1",
+		"5 4 2 1 3",
+		"5 4 1 2 3",
+		"5 4 1 3 2",
+		"5 1 3 4 2",
+		"5 1 3 2 4",
+		"5 1 4 3 2",
+		"5 1 4 2 3",
+		"5 1 2 4 3",
+		"5 1 2 3 4"
+	]
+	permutationOfThreeNumbers = [
+		"1 3 2",
+		"2 1 3",
+		"2 3 1",
+		"1 2 3",
+		"3 2 1",
+		"3 1 2"
+	]
+	i = 1
+	if size == 3:
+		for x in permutationOfThreeNumbers:
+			args = x
+			writeToFile(args, i)
+			result = excutePrograms(args)
+			result = excutePrograms(args)
+			if result[0] < least[1]:
+				least[1] = result[0]
+				least[0] = i
+			if result[0] > most[1]:
+				most[1] = result[0]
+				most[0] = i
+			sum = sum + result[0]
+			printOutput(size, i, result[0], result[1], getGrade(size, result[0]))
+			i = i + 1
+		avg = sum // 9
+	elif size == 5:
+		for x in permutationOfFiveNumbers:
+			args = x
+			writeToFile(args, i)
+			result = excutePrograms(args)
+			result = excutePrograms(args)
+			if result[0] < least[1]:
+				least[1] = result[0]
+				least[0] = i
+			if result[0] > most[1]:
+				most[1] = result[0]
+				most[0] = i
+			sum = sum + result[0]
+			printOutput(size, i, result[0], result[1], getGrade(size, result[0]))
+			i = i + 1
+		avg = sum // 120
+	else:
+		for x in range(1, loopAmount + 1):
+			args = ' '.join(str(x) for x in random.sample(range(lowInt, highInt), size))
+			writeToFile(args, x)
+			result = excutePrograms(args)
+			if result[0] < least[1]:
+				least[1] = result[0]
+				least[0] = x
+			if result[0] > most[1]:
+				most[1] = result[0]
+				most[0] = x
+			sum = sum + result[0]
+			printOutput(size, x, result[0], result[1], getGrade(size, result[0]))
+		avg = sum // loopAmount
+
+	print("{:<16s}: {:<5d} [Case:{:3d}]".format("Worst Scenario", most[1], most[0]))
+	print("{:<16s}: {:<5d} [Case:{:3d}]".format("Best Scenario", least[1], least[0]))
+	print("{:<16s}: {:<5d}".format("Average", avg))
+	print("{:<16s}: {:<5d}".format("Score", getGrade(size, avg)))
+
+if __name__ == '__main__':
+	f = open("test_case", "w")
+	f.write("")
+	f.close()
+	version = [3, 5, 100, 500]
+	startTests(3)
+	print("\n\n")
+	startTests(5)
+	print("\n\n")
+	startTests(100)
+	print("\n\n")
+	startTests(500)
+	print("\n\n")
