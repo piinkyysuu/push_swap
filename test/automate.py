@@ -6,7 +6,7 @@ from subprocess import call
 import subprocess as sp
 import sys
 
-path = '/Users/thule/Desktop/projects/push_swap/'
+path = '/Users/thle/Desktop/projects/push_swap/'
 push_swap = path + 'push_swap'
 checker = path + 'checker'
 
@@ -51,16 +51,6 @@ size = 0
 lowInt = -2147483648
 highInt = 2147483647
 
-if lenCmdArg < 2:
-	print("Not enough arguments")
-else:
-	size = int(cmdArg[1])
-	if lenCmdArg == 3:
-		lowInt = int(cmdArg[2])
-	elif lenCmdArg == 4:
-		lowInt = int(cmdArg[2])
-		highInt = int(cmdArg[3]) + 1
-
 f = open("test_case", "w")
 f.write("")
 f.close()
@@ -104,7 +94,7 @@ for i in range(1, 36):
 	print('_', end='')
 print('\n')
 
-loopAmount = 10
+loopAmount = 20
 
 for x in range(1, loopAmount + 1):
 	args = ' '.join(str(x) for x in random.sample(range(lowInt, highInt), size))
@@ -121,4 +111,52 @@ print("maxRes: " + str(maxRes))
 print("minRes: " + str(minRes))
 print("avgRes: " + str(int(sumRes / loopAmount)))
 
+
+def printVersion(size):
+	if size == 3:
+		return "SIMPLE VERSION [3]"
+	if size == 5:
+		return "SIMPLE VERSION [5]"
+	if size == 100:
+		return "MIDDLE VERSION [100]"
+	if size == 500:
+		return "ADVANCED VERSION [500]"
+
+def getGrade(size, res):
+	if size == 3:
+		if res <= 3:
+			return 5
+		else
+			return 0
+	if size == 5
+		if res <= 12:
+			return 5
+		else
+			return 0
+	if size == 100
+		if res <= 700:
+			return 5
+		elif res <= 900:
+			return 4
+		elif res <= 1100:
+			return 3
+		elif res <= 1300:
+			return 2
+		elif res <= 1500:
+			return 1
+		else:
+			return 0
+	if size == 500
+		if res <= 5500:
+			return 5
+		elif res <= 7000:
+			return 4
+		elif res <= 8500:
+			return 3
+		elif res <= 10000:
+			return 2
+		elif res <= 11500:
+			return 1
+		else:
+			return 0
 
