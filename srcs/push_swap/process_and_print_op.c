@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   process_and_print_op.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 18:51:07 by thle              #+#    #+#             */
-/*   Updated: 2022/08/25 21:27:01 by thle             ###   ########.fr       */
+/*   Updated: 2022/08/31 01:27:12 by thule            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -245,6 +245,7 @@ void process_and_print_op(t_op **head, char *op, t_stack **a, t_stack **b)
 {
 	if (op[0] == '0')
 	{
+		central_customization(head);
 		print_offical(*head);
 		delete_list(head);
 		return;
