@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   stack_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
+/*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 15:55:23 by thule             #+#    #+#             */
-/*   Updated: 2022/07/25 11:14:54 by thule            ###   ########.fr       */
+/*   Updated: 2022/08/31 18:25:07 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,57 +61,80 @@ t_stack *create_new_element(int value)
 	return (new);
 }
 
-void print_stack(t_stack *head, char c)
-{
-	t_stack *tmp = head;
-	while (tmp)
-	{
-		printf("%d\n", tmp->value);
-		tmp = tmp->next;
-	}
-	printf("-\n%c\n", c);
-}
-
-int count_stack(t_stack **head)
+t_stack *copy_stack(t_stack *stack, int amount)
 {
 	t_stack *tmp;
-	int len;
+	t_stack *head;
 
-	len = 0;
-	tmp = *head;
-	while (tmp)
+	if (amount > 0 && stack)
 	{
-		len++;
-		tmp = tmp->next;
+		head = create_new_element(stack->value);
+		amount--;
+		tmp = head;
+		stack = stack->next;
+		while (stack && amount > 0)
+		{
+			tmp->next = create_new_element(stack->value);
+			tmp = tmp->next;
+			stack = stack->next;
+			amount--;
+		}
+		return head;
 	}
-	return len;
+	return (NULL);
 }
 
-void print_2_stacks(t_stack *a, t_stack *b)
-{
-	printf("%20s %s|%s %-15s\n", "Stack A", YELLOW, WHITE, "Stack B");
-	int a_len = count_stack(&a);
-	int b_len = count_stack(&b);
-	t_stack *t_a = a;
-	t_stack *t_b = b;
-	int index = 1;
-	while (a && b)
-	{
-		printf("[%3d]%15d %s|%s %-15d\n", index, a->value, YELLOW, WHITE, b->value);
-		a = a->next;
-		b = b->next;
-		index++;
-	}
-	while (a)
-	{
-		printf("[%3d]%15d %s|%s\n", index, a->value, YELLOW, WHITE);
-		a = a->next;
-		index++;
-	}
-	while (b)
-	{
-		printf("[%3d]%15s %s|%s %-15d\n", index, " ", YELLOW, WHITE, b->value);
-		b = b->next;
-		index++;
-	}
-}
+// void print_stack(t_stack *head, char c)
+// {
+// 	t_stack *tmp = head;
+// 	while (tmp)
+// 	{
+// 		printf("%d\n", tmp->value);
+// 		tmp = tmp->next;
+// 	}
+// 	printf("-\n%c\n", c);
+// }
+
+// int count_stack(t_stack **head)
+// {
+// 	t_stack *tmp;
+// 	int len;
+
+// 	len = 0;
+// 	tmp = *head;
+// 	while (tmp)
+// 	{
+// 		len++;
+// 		tmp = tmp->next;
+// 	}
+// 	return len;
+// }
+
+// void print_2_stacks(t_stack *a, t_stack *b)
+// {
+// 	printf("%20s %s|%s %-15s\n", "Stack A", YELLOW, WHITE, "Stack B");
+// 	int a_len = count_stack(&a);
+// 	int b_len = count_stack(&b);
+// 	t_stack *t_a = a;
+// 	t_stack *t_b = b;
+// 	int index = 1;
+// 	while (a && b)
+// 	{
+// 		printf("[%3d]%15d %s|%s %-15d\n", index, a->value, YELLOW, WHITE, b->value);
+// 		a = a->next;
+// 		b = b->next;
+// 		index++;
+// 	}
+// 	while (a)
+// 	{
+// 		printf("[%3d]%15d %s|%s\n", index, a->value, YELLOW, WHITE);
+// 		a = a->next;
+// 		index++;
+// 	}
+// 	while (b)
+// 	{
+// 		printf("[%3d]%15s %s|%s %-15d\n", index, " ", YELLOW, WHITE, b->value);
+// 		b = b->next;
+// 		index++;
+// 	}
+// }

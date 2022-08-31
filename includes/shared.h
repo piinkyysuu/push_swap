@@ -6,7 +6,7 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 14:46:18 by thule             #+#    #+#             */
-/*   Updated: 2022/08/25 13:34:38 by thle             ###   ########.fr       */
+/*   Updated: 2022/08/31 18:25:26 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,10 @@ void push(t_stack **a, t_stack **b);
 int is_stack_sorted(t_stack **head);
 void delete_stack(t_stack **head);
 t_stack *create_new_element(int value);
-void print_stack(t_stack *head, char c);
-int count_stack(t_stack **head);
-void print_2_stacks(t_stack *a, t_stack *b);
+t_stack *copy_stack(t_stack *stack, int amount);
+// void print_stack(t_stack *head, char c);
+// int count_stack(t_stack **head);
+// void print_2_stacks(t_stack *a, t_stack *b);
 
 /* create_stack.c */
 int create_stack(int amount, char *array[], t_stack **head);

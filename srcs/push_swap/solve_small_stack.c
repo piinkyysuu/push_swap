@@ -6,7 +6,7 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 18:06:05 by thle              #+#    #+#             */
-/*   Updated: 2022/08/24 18:40:17 by thle             ###   ########.fr       */
+/*   Updated: 2022/08/31 20:22:41 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,17 +104,4 @@ void solve_three(t_op **op, t_info *stack, int amount)
 		solve_stack_of_three(op, stack);
 	else
 		solve_top_three(op, stack);
-}
-
-void solve_five(t_op **op, t_info *a, t_info *b)
-{
-	rotate_to_top(op, a, get_pos(a->head, get_min(a->head)));
-	process_and_print_op(op, b->op[PUSH], &(a->head), &(b->head));
-	rotate_to_top(op, a, get_pos(a->head, get_min(a->head)));
-	process_and_print_op(op, b->op[PUSH], &(a->head), &(b->head));
-	solve_three(op, a, 3);
-	solve_three(op, a, 2);
-	process_and_print_op(op, a->op[PUSH], &(a->head), &(b->head));
-	process_and_print_op(op, a->op[PUSH], &(a->head), &(b->head));
-	b->sorted_amount = 5;
 }
