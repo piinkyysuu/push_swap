@@ -6,19 +6,18 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 15:55:23 by thule             #+#    #+#             */
-/*   Updated: 2022/08/31 18:25:07 by thle             ###   ########.fr       */
+/*   Updated: 2022/09/01 17:14:02 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shared.h"
-// #include "push_swap.h"
 
-int is_stack_sorted(t_stack **head)
+int is_stack_sorted(t_stack *head)
 {
 	t_stack *tmp;
 	int value;
 
-	tmp = *head;
+	tmp = head;
 	value = tmp->value;
 	tmp = tmp->next;
 	while (tmp)
@@ -60,81 +59,3 @@ t_stack *create_new_element(int value)
 	}
 	return (new);
 }
-
-t_stack *copy_stack(t_stack *stack, int amount)
-{
-	t_stack *tmp;
-	t_stack *head;
-
-	if (amount > 0 && stack)
-	{
-		head = create_new_element(stack->value);
-		amount--;
-		tmp = head;
-		stack = stack->next;
-		while (stack && amount > 0)
-		{
-			tmp->next = create_new_element(stack->value);
-			tmp = tmp->next;
-			stack = stack->next;
-			amount--;
-		}
-		return head;
-	}
-	return (NULL);
-}
-
-// void print_stack(t_stack *head, char c)
-// {
-// 	t_stack *tmp = head;
-// 	while (tmp)
-// 	{
-// 		printf("%d\n", tmp->value);
-// 		tmp = tmp->next;
-// 	}
-// 	printf("-\n%c\n", c);
-// }
-
-// int count_stack(t_stack **head)
-// {
-// 	t_stack *tmp;
-// 	int len;
-
-// 	len = 0;
-// 	tmp = *head;
-// 	while (tmp)
-// 	{
-// 		len++;
-// 		tmp = tmp->next;
-// 	}
-// 	return len;
-// }
-
-// void print_2_stacks(t_stack *a, t_stack *b)
-// {
-// 	printf("%20s %s|%s %-15s\n", "Stack A", YELLOW, WHITE, "Stack B");
-// 	int a_len = count_stack(&a);
-// 	int b_len = count_stack(&b);
-// 	t_stack *t_a = a;
-// 	t_stack *t_b = b;
-// 	int index = 1;
-// 	while (a && b)
-// 	{
-// 		printf("[%3d]%15d %s|%s %-15d\n", index, a->value, YELLOW, WHITE, b->value);
-// 		a = a->next;
-// 		b = b->next;
-// 		index++;
-// 	}
-// 	while (a)
-// 	{
-// 		printf("[%3d]%15d %s|%s\n", index, a->value, YELLOW, WHITE);
-// 		a = a->next;
-// 		index++;
-// 	}
-// 	while (b)
-// 	{
-// 		printf("[%3d]%15s %s|%s %-15d\n", index, " ", YELLOW, WHITE, b->value);
-// 		b = b->next;
-// 		index++;
-// 	}
-// }

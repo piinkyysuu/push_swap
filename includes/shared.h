@@ -6,22 +6,12 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 14:46:18 by thule             #+#    #+#             */
-/*   Updated: 2022/08/31 18:25:26 by thle             ###   ########.fr       */
+/*   Updated: 2022/09/01 17:12:06 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include "libft.h"
-#include <stdio.h> //rmb to delete
-
-#define NORMAL "\x1B[0m"
-#define RED "\x1B[31m"
-#define GREEN "\x1B[32m"
-#define YELLOW "\x1B[33m"
-#define BLUE "\x1B[34m"
-#define MAGENTA "\x1B[35m"
-#define CYAN "\x1B[36m"
-#define WHITE "\x1B[37m"
 
 #define OP_INDEX "000111222"
 
@@ -48,10 +38,10 @@ enum e_instructions
 
 enum e_op
 {
-	SWAP, //0
-	ROT, //1
-	R_ROT, //2
-	PUSH //3
+	SWAP,
+	ROT,
+	R_ROT,
+	PUSH
 };
 
 /* operations.c */
@@ -61,13 +51,9 @@ void reverse_rotate(t_stack **head);
 void push(t_stack **a, t_stack **b);
 
 /* stack_utils.c */
-int is_stack_sorted(t_stack **head);
+int is_stack_sorted(t_stack *head);
 void delete_stack(t_stack **head);
 t_stack *create_new_element(int value);
-t_stack *copy_stack(t_stack *stack, int amount);
-// void print_stack(t_stack *head, char c);
-// int count_stack(t_stack **head);
-// void print_2_stacks(t_stack *a, t_stack *b);
 
 /* create_stack.c */
 int create_stack(int amount, char *array[], t_stack **head);

@@ -6,7 +6,7 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 20:18:05 by thle              #+#    #+#             */
-/*   Updated: 2022/08/31 20:18:50 by thle             ###   ########.fr       */
+/*   Updated: 2022/09/01 17:52:56 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ void change_op(t_op *first, t_op *second)
 	else if (first->operation == R_ROT)
 		first->op = "rrr";
 }
-
 
 void combine_op(t_op *first, t_op *second)
 {
@@ -47,7 +46,7 @@ void combine_op(t_op *first, t_op *second)
 		}
 		second = second->next;
 	}
-	link_first_and_second(first, first_tail, second_head);
+	link_two_op_lists(first, first_tail, second_head);
 }
 
 void cancel_push(t_op *first, t_op *second)
@@ -66,7 +65,7 @@ void cancel_push(t_op *first, t_op *second)
 		second = second->next;
 		first = first->next;
 	}
-	link_first_and_second(first, first_tail, second_head);
+	link_two_op_lists(first, first_tail, second_head);
 }
 
 void cancel_rotate_helper(t_op *op, char *instruction, char *counter)

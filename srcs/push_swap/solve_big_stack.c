@@ -6,12 +6,15 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 18:19:12 by thle              #+#    #+#             */
-/*   Updated: 2022/08/24 18:45:00 by thle             ###   ########.fr       */
+/*   Updated: 2022/09/01 17:46:15 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
+/*
+When merge to stack a, the stack should be in descending order.
+*/
 void merge_to_stack_b(t_op **op, t_info *a, t_info *b)
 {
 	int a_size;
@@ -32,12 +35,15 @@ void merge_to_stack_b(t_op **op, t_info *a, t_info *b)
 			rotate_to_bottom(op, b, get_pos(b->head, min));
 		else
 			rotate_to_top(op, b, get_pos(b->head, get_value(*(b->hold), value, DESC)));
-		process_and_print_op(op, b->op[PUSH], &(a->head), &(b->head));
+		optimize_then_print_op(op, b->op[PUSH], &(a->head), &(b->head));
 		hold = retrieve_node(a->hold, value);
 		push(b->hold, &hold);
 	}
 }
 
+/*
+When merge to stack a, the stack should be in ascending order.
+*/
 void merge_to_stack_a(t_op **op, t_info *a, t_info *b)
 {
 	int b_size;
@@ -55,7 +61,7 @@ void merge_to_stack_a(t_op **op, t_info *a, t_info *b)
 			rotate_to_bottom(op, a, get_pos(a->head, max));
 		else
 			rotate_to_top(op, a, get_pos(a->head, get_value(*(a->hold), value, ASC)));
-		process_and_print_op(op, a->op[PUSH], &(a->head), &(b->head));
+		optimize_then_print_op(op, a->op[PUSH], &(a->head), &(b->head));
 		hold = retrieve_node(b->hold, value);
 		push(a->hold, &hold);
 	}
@@ -87,6 +93,14 @@ t_stack *merge_sort_stack_b(t_op **op, t_info *a, t_info *b, int stack_size)
 	return on_b;
 }
 
+/*
+Cursively called merge_sort_stack_b() then merge_sort_stack_a()
+Base case: stack_size <= 3
+Most of the stack size will be calculated based on the stack_size and container_size at that stage
+So stack_size != get_size(stack) at most cases
+Both of this function will return copy list of what has been solved or merged
+This copy will be later used in merge_to_stack_a() or merge_to_stack_b() for the best rotations possible.
+*/
 t_stack *merge_sort_stack_a(t_op **op, t_info *a, t_info *b, int stack_size)
 {
 	t_stack *on_a;

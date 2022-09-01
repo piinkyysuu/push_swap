@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   create_stack.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
+/*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 16:10:33 by thule             #+#    #+#             */
-/*   Updated: 2022/07/12 16:45:56 by thule            ###   ########.fr       */
+/*   Updated: 2022/09/01 17:10:54 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,41 +99,59 @@ static int number_len(long n)
 	return (len + sign);
 }
 
+/*
+Each argv will be checked and saved as number and saved into the list
+If there is error, return (-1)
+else, return (amount)
+*/
+static int create_stack_helper(int index, char *array[], t_stack **head)
+{
+	long number;
+	int count;
+	
+	count = 0;
+	while (*(array[index]))
+	{
+		if (*(array[index]) == '+')
+			(array[index])++;
+		number = ft_atol(array[index]);
+		if (number >= INT_MIN && number <= INT_MAX)
+		{
+			if (!check_then_insert(head, number))
+				return (-1);
+			count++;
+		}
+		else
+			return (-1);
+		array[index] = array[index] + number_len(number);
+		while (ft_isspace(*(array[index])))
+			(array[index])++;
+	}
+	return count;
+}
+
+/*
+Return -1 if there's an error (duplicate numbers or other chars)
+else, return amount
+*/
 int create_stack(int amount, char *array[], t_stack **head)
 {
 	size_t index;
 	long number;
 	int count;
+	int res;
 
 	count = 0;
 	index = 1;
+	res = 0;
 	if (!raw_form_check(array))
-		return (0);
+		return (-1);
 	while (index < amount)
 	{
-		while (*(array[index]))
-		{
-			if (*(array[index]) == '+')
-				(array[index])++;
-			number = ft_atol(array[index]);
-			if (number >= INT_MIN && number <= INT_MAX)
-			{
-				if (!check_then_insert(head, number))
-				{
-					delete_stack(head);
-					return 0;
-				}
-				count++;
-			}
-			else
-			{
-				delete_stack(head);
-				return (0);
-			}
-			array[index] = array[index] + number_len(number);
-			while (ft_isspace(*(array[index])))
-				(array[index])++;
-		}
+		res = create_stack_helper(index, array, head);
+		if (res == -1)
+			return (-1);
+		count += res;
 		index++;
 	}
 	return (count);

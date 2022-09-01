@@ -1,68 +1,49 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   push_swap_v2.c                                     :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/08/02 13:28:16 by thle              #+#    #+#             */
-/*   Updated: 2022/08/31 20:28:37 by thle             ###   ########.fr       */
+/*   Created: 2022/09/01 15:04:25 by thle              #+#    #+#             */
+/*   Updated: 2022/09/01 15:05:21 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-/* Aims for merge sort method for bigger than 5 */
-
 #include "push_swap.h"
 
-#define EMPTY LONG_MIN
-
-
-void process_and_print_op(t_op **head, char *op, t_stack **a, t_stack **b);
-
-
-void initialize_info(t_info *stack, char name)
+int get_pos(t_stack *stack, int value)
 {
-	stack->name = name;
-	stack->head = NULL;
-	stack->splitted = 0;
-	stack->hold = NULL;
-	stack->op[4] = "\0";
-	stack->op[PUSH] = "pa";
-	stack->op[SWAP] = "sa";
-	stack->op[ROT] = "ra";
-	stack->op[R_ROT] = "rra";
-	if (stack->name == 'b')
+	t_stack *tmp = stack;
+	int pos = 1;
+
+	while (tmp)
 	{
-		stack->op[PUSH] = "pb";
-		stack->op[SWAP] = "sb";
-		stack->op[ROT] = "rb";
-		stack->op[R_ROT] = "rrb";
+		if (tmp->value == value)
+			return pos;
+		pos++;
+		tmp = tmp->next;
 	}
+	return (0);
 }
 
-
-int main(int argc, char *argv[])
+long get_value(t_stack *stack, int value, int order)
 {
-	t_info a;
-	t_info b;
-	t_op *op = NULL;
+	long hold;
 
-	initialize_info(&a, 'a');
-	initialize_info(&b, 'b');
-
-	int amount = create_stack(argc, argv, &(a.head));
-	if (!amount)
-		write(2, "Error\n", 6);
-	else
+	hold = LONG_MIN;
+	if (order == ASC)
+		hold = LONG_MAX;
+	while (stack)
 	{
-		merge_sort(&op, &a, &b, get_size(a.head));
-		process_and_print_op(&op, "0", &(a.head), &(b.head));
+		if (stack->value < value && hold < stack->value && order == DESC)
+			hold = stack->value;
+		if (stack->value > value && hold > stack->value && order == ASC)
+			hold = stack->value;
+		stack = stack->next;
 	}
-	exit(1);
-	return (1);
+	return hold;
 }
-
-/* later use */
 
 int get_size(t_stack *stack)
 {

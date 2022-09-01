@@ -6,25 +6,26 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/23 14:39:09 by thule             #+#    #+#             */
-/*   Updated: 2022/08/24 18:00:01 by thle             ###   ########.fr       */
+/*   Updated: 2022/09/01 17:11:50 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "checker.h"
+#include "libft.h"
+#include "shared.h"
 
 /*
 Central point for reading op_arrays from standard input
-The op_array will be saved in *op
+The op will be saved in *op
 Call apply_op()
 After reading all op_array(s), is_stack_sorted() gets called
-return -1 if the op is not correct
-return 0 if the stack is not sorted
-return 1 if the stack is sorted
+return (-1) if the op is not correct
+return (0) if the stack is not sorted
+return (1) if the stack is sorted
 */
-static int read_then_apply_op(t_stack *a, t_stack *b)
+static int	read_then_apply_op(t_stack *a, t_stack *b)
 {
-	char *op;
-	int result;
+	char	*op;
+	int		result;
 
 	op = NULL;
 	result = 1;
@@ -34,28 +35,26 @@ static int read_then_apply_op(t_stack *a, t_stack *b)
 		{
 			result = -1;
 			ft_strdel(&op);
-			break;
+			break ;
 		}
 		ft_strdel(&op);
 	}
-	if ((!is_stack_sorted(&a) || b) && result != -1)
+	if ((!is_stack_sorted(a) || b) && result != -1)
 		result = 0;
-	delete_stack(&a);
-	delete_stack(&b);
 	return (result);
 }
 
-int main(int argc, char *argv[])
+int	main(int argc, char *argv[])
 {
-	t_stack *a;
-	t_stack *b;
-	int result;
+	t_stack	*a;
+	t_stack	*b;
+	int		result;
 
 	a = NULL;
 	b = NULL;
 	if (argc < 2)
-		return (0);
-	if (!create_stack(argc, argv, &a))
+		return (write(1, "\n", 1), 0);
+	if (create_stack(argc, argv, &a) == -1)
 		write(2, "Error\n", 6);
 	else
 	{
@@ -67,5 +66,7 @@ int main(int argc, char *argv[])
 		else
 			write(1, "OK\n", 3);
 	}
+	delete_stack(&a);
+	delete_stack(&b);
 	return (0);
 }

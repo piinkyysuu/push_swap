@@ -6,7 +6,7 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 18:06:05 by thle              #+#    #+#             */
-/*   Updated: 2022/08/31 20:22:41 by thle             ###   ########.fr       */
+/*   Updated: 2022/09/01 16:47:34 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,13 @@ static void solve_stack_of_three(t_op **op, t_info *stack)
 		third = stack->head->next->next->value;
 		if ((second > first && second > third && stack->name == 'a') ||
 			(second < first && second < third && stack->name == 'b'))
-			process_and_print_op(op, stack->op[R_ROT], &(stack->head), &(stack->head));
+			optimize_then_print_op(op, stack->op[R_ROT], &(stack->head), &(stack->head));
 		else if ((first > third && first > second && stack->name == 'a') ||
 				 (first < third && first < second && stack->name == 'b'))
-			process_and_print_op(op, stack->op[ROT], &(stack->head), &(stack->head));
+			optimize_then_print_op(op, stack->op[ROT], &(stack->head), &(stack->head));
 		else if ((second < first && stack->name == 'a') ||
 				 (second > first && stack->name == 'b'))
-			process_and_print_op(op, stack->op[SWAP], &(stack->head), &(stack->head));
+			optimize_then_print_op(op, stack->op[SWAP], &(stack->head), &(stack->head));
 		else
 			return;
 	}
@@ -48,17 +48,17 @@ static void solve_top_three_helper(t_op **op, t_info *stack)
 	first = stack->head->value;
 	second = stack->head->next->value;
 	third = stack->head->next->next->value;
-	process_and_print_op(op, stack->op[ROT], &(stack->head), &(stack->head));
-	process_and_print_op(op, stack->op[SWAP], &(stack->head), &(stack->head));
-	process_and_print_op(op, stack->op[R_ROT], &(stack->head), &(stack->head));
+	optimize_then_print_op(op, stack->op[ROT], &(stack->head), &(stack->head));
+	optimize_then_print_op(op, stack->op[SWAP], &(stack->head), &(stack->head));
+	optimize_then_print_op(op, stack->op[R_ROT], &(stack->head), &(stack->head));
 	if ((first < second && second > third && first > third && stack->name == 'a') || (first > second && second < third && first < third && stack->name == 'b'))
-		process_and_print_op(op, stack->op[SWAP], &(stack->head), &(stack->head));
+		optimize_then_print_op(op, stack->op[SWAP], &(stack->head), &(stack->head));
 	else if ((third < second && second < first && stack->name == 'a') || (third > second && second > first && stack->name == 'b'))
 	{
-		process_and_print_op(op, stack->op[SWAP], &(stack->head), &(stack->head));
-		process_and_print_op(op, stack->op[ROT], &(stack->head), &(stack->head));
-		process_and_print_op(op, stack->op[SWAP], &(stack->head), &(stack->head));
-		process_and_print_op(op, stack->op[R_ROT], &(stack->head), &(stack->head));
+		optimize_then_print_op(op, stack->op[SWAP], &(stack->head), &(stack->head));
+		optimize_then_print_op(op, stack->op[ROT], &(stack->head), &(stack->head));
+		optimize_then_print_op(op, stack->op[SWAP], &(stack->head), &(stack->head));
+		optimize_then_print_op(op, stack->op[R_ROT], &(stack->head), &(stack->head));
 	}
 }
 
@@ -74,13 +74,13 @@ static void solve_top_three(t_op **op, t_info *stack)
 	if ((first < second && second < third && stack->name == 'a') || (first > second && second > third && stack->name == 'b'))
 		return;
 	else if ((first > second && second < third && third > first && stack->name == 'a') || (first < second && second > third && third < first && stack->name == 'b'))
-		process_and_print_op(op, stack->op[SWAP], &(stack->head), &(stack->head));
+		optimize_then_print_op(op, stack->op[SWAP], &(stack->head), &(stack->head));
 	else if ((first > second && first > third && second < third && stack->name == 'a') || (first < second && first < third && second > third && stack->name == 'b'))
 	{
-		process_and_print_op(op, stack->op[SWAP], &(stack->head), &(stack->head));
-		process_and_print_op(op, stack->op[ROT], &(stack->head), &(stack->head));
-		process_and_print_op(op, stack->op[SWAP], &(stack->head), &(stack->head));
-		process_and_print_op(op, stack->op[R_ROT], &(stack->head), &(stack->head));
+		optimize_then_print_op(op, stack->op[SWAP], &(stack->head), &(stack->head));
+		optimize_then_print_op(op, stack->op[ROT], &(stack->head), &(stack->head));
+		optimize_then_print_op(op, stack->op[SWAP], &(stack->head), &(stack->head));
+		optimize_then_print_op(op, stack->op[R_ROT], &(stack->head), &(stack->head));
 	}
 	else
 		solve_top_three_helper(op, stack);
@@ -97,7 +97,7 @@ void solve_three(t_op **op, t_info *stack, int amount)
 	{
 		if ((stack->head->value > stack->head->next->value && stack->name == 'a') ||
 			(stack->head->value < stack->head->next->value && stack->name == 'b'))
-			process_and_print_op(op, stack->op[SWAP], &(stack->head), &(stack->head));
+			optimize_then_print_op(op, stack->op[SWAP], &(stack->head), &(stack->head));
 		return;
 	}
 	if (size == 3)

@@ -6,7 +6,7 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 18:18:51 by thle              #+#    #+#             */
-/*   Updated: 2022/08/31 18:27:13 by thle             ###   ########.fr       */
+/*   Updated: 2022/09/01 16:47:33 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int split_stack(t_op **op, t_info *a, t_info *b, int stack_size)
 	if (b->splitted == 1)
 		container = a;
 	while (other_stack_size-- > 0)
-		process_and_print_op(op, container->op[PUSH], &(a->head), &(b->head));
+		optimize_then_print_op(op, container->op[PUSH], &(a->head), &(b->head));
 	a->splitted = 0;
 	b->splitted = 0;
 	return (stack_size / 2);
@@ -53,35 +53,25 @@ t_stack *retrieve_node(t_stack **stack, int value)
 	return tmp;
 }
 
-int get_pos(t_stack *stack, int value)
+t_stack *copy_stack(t_stack *stack, int amount)
 {
-	t_stack *tmp = stack;
-	int pos = 1;
+	t_stack *tmp;
+	t_stack *head;
 
-	while (tmp)
+	if (amount > 0 && stack)
 	{
-		if (tmp->value == value)
-			return pos;
-		pos++;
-		tmp = tmp->next;
-	}
-	return (0);
-}
-
-long get_value(t_stack *stack, int value, int order)
-{
-	long hold;
-
-	hold = LONG_MIN;
-	if (order == ASC)
-		hold = LONG_MAX;
-	while (stack)
-	{
-		if (stack->value < value && hold < stack->value && order == DESC)
-			hold = stack->value;
-		if (stack->value > value && hold > stack->value && order == ASC)
-			hold = stack->value;
+		head = create_new_element(stack->value);
+		amount--;
+		tmp = head;
 		stack = stack->next;
+		while (stack && amount > 0)
+		{
+			tmp->next = create_new_element(stack->value);
+			tmp = tmp->next;
+			stack = stack->next;
+			amount--;
+		}
+		return head;
 	}
-	return hold;
+	return (NULL);
 }
