@@ -6,12 +6,12 @@
 #    By: thle <thle@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/23 14:12:18 by thule             #+#    #+#              #
-#    Updated: 2022/09/01 16:54:41 by thle             ###   ########.fr        #
+#    Updated: 2022/09/01 18:44:17 by thle             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC = gcc
-#FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror
 CHECKER = checker
 PUSH_SWAP = push_swap
 
