@@ -6,13 +6,13 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 20:18:05 by thle              #+#    #+#             */
-/*   Updated: 2022/09/01 18:46:50 by thle             ###   ########.fr       */
+/*   Updated: 2022/09/01 18:54:03 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void change_op(t_op *first, t_op *second)
+void	change_op(t_op *first, t_op *second)
 {
 	second->op = "0";
 	if (first->operation == SWAP)
@@ -23,10 +23,10 @@ void change_op(t_op *first, t_op *second)
 		first->op = "rrr";
 }
 
-void combine_op(t_op *first, t_op *second)
+void	combine_op(t_op *first, t_op *second)
 {
-	t_op *second_head;
-	t_op *first_tail;
+	t_op	*second_head;
+	t_op	*first_tail;
 
 	second_head = second;
 	first_tail = NULL;
@@ -40,7 +40,7 @@ void combine_op(t_op *first, t_op *second)
 			{
 				change_op(first, second);
 				first = first->next;
-				break;
+				break ;
 			}
 			first = first->next;
 		}
@@ -49,10 +49,10 @@ void combine_op(t_op *first, t_op *second)
 	link_two_op_lists(first, first_tail, second_head);
 }
 
-void cancel_push(t_op *first, t_op *second)
+void	cancel_push(t_op *first, t_op *second)
 {
-	t_op *second_head;
-	t_op *first_tail;
+	t_op	*second_head;
+	t_op	*first_tail;
 
 	second_head = second;
 	first_tail = NULL;
@@ -68,10 +68,11 @@ void cancel_push(t_op *first, t_op *second)
 	link_two_op_lists(first, first_tail, second_head);
 }
 
-void cancel_rotate_helper(t_op *op, char *counter)
+void	cancel_rotate_helper(t_op *op, char *counter)
 {
-	t_op *tmp = op;
+	t_op	*tmp;
 
+	tmp = op;
 	op = op->next;
 	while (op)
 	{
@@ -79,17 +80,17 @@ void cancel_rotate_helper(t_op *op, char *counter)
 		{
 			tmp->op = "0";
 			op->op = "0";
-			return;
+			return ;
 		}
 		else if (op->stack == tmp->stack)
-			return;
+			return ;
 		op = op->next;
 	}
 }
 
-void cancel_rotate(t_op *op)
+void	cancel_rotate(t_op *op)
 {
-	t_op *tmp;
+	t_op	*tmp;
 
 	tmp = op;
 	while (tmp)

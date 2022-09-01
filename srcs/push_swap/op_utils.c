@@ -6,7 +6,7 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/01 16:51:58 by thle              #+#    #+#             */
-/*   Updated: 2022/09/01 18:44:04 by thle             ###   ########.fr       */
+/*   Updated: 2022/09/01 18:52:12 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,14 +72,14 @@ t_op	*split_instructions(t_op *first)
 		{
 			hold = first->next;
 			first->next = NULL;
-			break;
+			break ;
 		}
 		first = first->next;
 	}
 	return (hold);
 }
 
-void link_two_op_lists(t_op *first, t_op *first_tail, t_op *second_head)
+void	link_two_op_lists(t_op *first, t_op *first_tail, t_op *second_head)
 {
 	if (first_tail == NULL)
 	{

@@ -6,30 +6,32 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/01 15:04:25 by thle              #+#    #+#             */
-/*   Updated: 2022/09/01 15:05:21 by thle             ###   ########.fr       */
+/*   Updated: 2022/09/01 19:10:59 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-int get_pos(t_stack *stack, int value)
+int	get_pos(t_stack *stack, int value)
 {
-	t_stack *tmp = stack;
-	int pos = 1;
+	t_stack	*tmp;
+	int		pos;
 
+	tmp = stack;
+	pos = 1;
 	while (tmp)
 	{
 		if (tmp->value == value)
-			return pos;
+			return (pos);
 		pos++;
 		tmp = tmp->next;
 	}
 	return (0);
 }
 
-long get_value(t_stack *stack, int value, int order)
+long	get_value(t_stack *stack, int value, int order)
 {
-	long hold;
+	long	hold;
 
 	hold = LONG_MIN;
 	if (order == ASC)
@@ -42,13 +44,13 @@ long get_value(t_stack *stack, int value, int order)
 			hold = stack->value;
 		stack = stack->next;
 	}
-	return hold;
+	return (hold);
 }
 
-int get_size(t_stack *stack)
+int	get_size(t_stack *stack)
 {
-	t_stack *tmp;
-	int pos = 0;
+	t_stack	*tmp;
+	int		pos;
 
 	tmp = stack;
 	pos = 0;
@@ -60,14 +62,14 @@ int get_size(t_stack *stack)
 	return (pos);
 }
 
-long get_max(t_stack *stack)
+long	get_max(t_stack *stack)
 {
-	t_stack *tmp;
-	int max;
+	t_stack	*tmp;
+	int		max;
 
 	tmp = stack;
 	if (!tmp)
-		return EMPTY;
+		return (EMPTY);
 	max = tmp->value;
 	tmp = tmp->next;
 	while (tmp)
@@ -76,17 +78,17 @@ long get_max(t_stack *stack)
 			max = tmp->value;
 		tmp = tmp->next;
 	}
-	return max;
+	return (max);
 }
 
-long get_min(t_stack *stack)
+long	get_min(t_stack *stack)
 {
-	t_stack *tmp;
-	int min;
+	t_stack	*tmp;
+	int		min;
 
 	tmp = stack;
 	if (!tmp)
-		return EMPTY;
+		return (EMPTY);
 	min = tmp->value;
 	tmp = tmp->next;
 	while (tmp)
@@ -95,5 +97,5 @@ long get_min(t_stack *stack)
 			min = tmp->value;
 		tmp = tmp->next;
 	}
-	return min;
+	return (min);
 }

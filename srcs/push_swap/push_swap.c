@@ -6,7 +6,7 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 13:28:16 by thle              #+#    #+#             */
-/*   Updated: 2022/09/01 17:21:41 by thle             ###   ########.fr       */
+/*   Updated: 2022/09/01 18:58:08 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #include "push_swap.h"
 
-void initialize_info(t_info *stack, char name)
+void	initialize_info(t_info *stack, char name)
 {
 	stack->name = name;
 	stack->head = NULL;
@@ -34,12 +34,12 @@ void initialize_info(t_info *stack, char name)
 	}
 }
 
-int main(int argc, char *argv[])
+int	main(int argc, char *argv[])
 {
-	t_info a;
-	t_info b;
-	t_op *op;
-	int size;
+	t_info	a;
+	t_info	b;
+	t_op	*op;
+	int		size;
 
 	op = NULL;
 	initialize_info(&a, 'a');
