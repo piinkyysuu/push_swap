@@ -6,7 +6,7 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 16:10:33 by thule             #+#    #+#             */
-/*   Updated: 2022/09/01 18:40:14 by thle             ###   ########.fr       */
+/*   Updated: 2022/09/01 18:49:15 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,8 +136,7 @@ else, return amount
 */
 int	create_stack(int amount, char *array[], t_stack **head)
 {
-	size_t	index;
-	long	number;
+	int		index;
 	int		count;
 	int		res;
 

@@ -6,7 +6,7 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 14:48:59 by thule             #+#    #+#             */
-/*   Updated: 2022/09/01 18:41:37 by thle             ###   ########.fr       */
+/*   Updated: 2022/09/01 18:47:45 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ void	reverse_rotate(t_stack **head)
 	if (!(*head) || !((*head)->next))
 		return ;
 	current = *head;
+	tmp = NULL;
 	while (current->next)
 	{
 		if ((current->next)->next == NULL)

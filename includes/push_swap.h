@@ -6,7 +6,7 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/06 11:46:00 by thule             #+#    #+#             */
-/*   Updated: 2022/09/01 18:08:40 by thle             ###   ########.fr       */
+/*   Updated: 2022/09/01 18:45:21 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	print_then_del_op(t_op **head);
 
 /* optimize.ops.c */
 void	cancel_rotate(t_op *op);
-void	cancel_rotate_helper(t_op *op, char *instruction, char *counter);
+void	cancel_rotate_helper(t_op *op, char *counter);
 void	cancel_push(t_op *first, t_op *second);
 void	change_op(t_op *first, t_op *second);
 void	combine_op(t_op *first, t_op *second);

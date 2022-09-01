@@ -6,15 +6,15 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/01 16:51:58 by thle              #+#    #+#             */
-/*   Updated: 2022/09/01 16:57:29 by thle             ###   ########.fr       */
+/*   Updated: 2022/09/01 18:44:04 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void update_op_node(t_op *node, char *op)
+void	update_op_node(t_op *node, char *op)
 {
-	int len;
+	int	len;
 
 	len = ft_strlen(op);
 	node->len = len;
@@ -34,10 +34,10 @@ void update_op_node(t_op *node, char *op)
 	node->next = NULL;
 }
 
-void append_op_list(t_op **head, char *op)
+void	append_op_list(t_op **head, char *op)
 {
-	t_op *new;
-	t_op *tmp;
+	t_op	*new;
+	t_op	*tmp;
 
 	tmp = *head;
 	new = (t_op *)malloc(sizeof(t_op));
@@ -47,17 +47,17 @@ void append_op_list(t_op **head, char *op)
 	if (!tmp)
 	{
 		*head = new;
-		return;
+		return ;
 	}
 	while (tmp->next)
 		tmp = tmp->next;
 	tmp->next = new;
 }
 
-t_op *split_instructions(t_op *first)
+t_op	*split_instructions(t_op *first)
 {
-	int first_char;
-	t_op *hold;
+	t_op	*hold;
+	int		first_char;
 
 	hold = NULL;
 	while (first && first->op[0] == '0')

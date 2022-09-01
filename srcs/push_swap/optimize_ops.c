@@ -6,7 +6,7 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 20:18:05 by thle              #+#    #+#             */
-/*   Updated: 2022/09/01 17:52:56 by thle             ###   ########.fr       */
+/*   Updated: 2022/09/01 18:46:50 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void cancel_push(t_op *first, t_op *second)
 	link_two_op_lists(first, first_tail, second_head);
 }
 
-void cancel_rotate_helper(t_op *op, char *instruction, char *counter)
+void cancel_rotate_helper(t_op *op, char *counter)
 {
 	t_op *tmp = op;
 
@@ -95,13 +95,13 @@ void cancel_rotate(t_op *op)
 	while (tmp)
 	{
 		if (!ft_strcmp("ra", tmp->op))
-			cancel_rotate_helper(tmp, "ra", "rra");
+			cancel_rotate_helper(tmp, "rra");
 		else if (!ft_strcmp("rb", tmp->op))
-			cancel_rotate_helper(tmp, "rb", "rrb");
+			cancel_rotate_helper(tmp, "rrb");
 		else if (!ft_strcmp("rra", tmp->op))
-			cancel_rotate_helper(tmp, "rra", "ra");
+			cancel_rotate_helper(tmp, "ra");
 		else if (!ft_strcmp("rrb", tmp->op))
-			cancel_rotate_helper(tmp, "rrb", "rb");
+			cancel_rotate_helper(tmp, "rb");
 		tmp = tmp->next;
 	}
 }
