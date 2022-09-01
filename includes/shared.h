@@ -6,20 +6,23 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 14:46:18 by thule             #+#    #+#             */
-/*   Updated: 2022/09/01 17:12:06 by thle             ###   ########.fr       */
+/*   Updated: 2022/09/01 18:11:28 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "libft.h"
+#ifndef SHARED_H
+# define SHARED_H
 
-#define OP_INDEX "000111222"
+# include <stdlib.h>
+# include "libft.h"
+
+# define OP_INDEX "000111222"
 
 typedef struct s_stack
 {
-	int value;
-	struct s_stack *next;
-} t_stack;
+	int				value;
+	struct s_stack	*next;
+}					t_stack;
 
 enum e_instructions
 {
@@ -45,18 +48,20 @@ enum e_op
 };
 
 /* operations.c */
-void swap(t_stack **head);
-void rotate(t_stack **head);
-void reverse_rotate(t_stack **head);
-void push(t_stack **a, t_stack **b);
+void	swap(t_stack **head);
+void	rotate(t_stack **head);
+void	reverse_rotate(t_stack **head);
+void	push(t_stack **a, t_stack **b);
 
 /* stack_utils.c */
-int is_stack_sorted(t_stack *head);
-void delete_stack(t_stack **head);
-t_stack *create_new_element(int value);
+t_stack	*create_new_element(int value);
+int		is_stack_sorted(t_stack *head);
+void	delete_stack(t_stack **head);
 
 /* create_stack.c */
-int create_stack(int amount, char *array[], t_stack **head);
+int		create_stack(int amount, char *array[], t_stack **head);
 
 /* apply_op.c */
-int	apply_op(char *op, t_stack **a, t_stack **b);
+int		apply_op(char *op, t_stack **a, t_stack **b);
+
+#endif
