@@ -6,16 +6,16 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 15:55:23 by thule             #+#    #+#             */
-/*   Updated: 2022/09/01 17:14:02 by thle             ###   ########.fr       */
+/*   Updated: 2022/09/01 18:42:19 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shared.h"
 
-int is_stack_sorted(t_stack *head)
+int	is_stack_sorted(t_stack *head)
 {
-	t_stack *tmp;
-	int value;
+	t_stack	*tmp;
+	int		value;
 
 	tmp = head;
 	value = tmp->value;
@@ -32,10 +32,10 @@ int is_stack_sorted(t_stack *head)
 	return (1);
 }
 
-void delete_stack(t_stack **head)
+void	delete_stack(t_stack **head)
 {
-	t_stack *next;
-	t_stack *current;
+	t_stack	*next;
+	t_stack	*current;
 
 	current = *head;
 	while (current)
@@ -47,9 +47,9 @@ void delete_stack(t_stack **head)
 	*head = NULL;
 }
 
-t_stack *create_new_element(int value)
+t_stack	*create_new_element(int value)
 {
-	t_stack *new;
+	t_stack	*new;
 
 	new = (t_stack *)malloc(sizeof(t_stack));
 	if (new)

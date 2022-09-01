@@ -1,24 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   instructions.c                                     :+:      :+:    :+:   */
+/*   operations.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
+/*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 14:48:59 by thule             #+#    #+#             */
-/*   Updated: 2022/07/01 19:52:56 by thule            ###   ########.fr       */
+/*   Updated: 2022/09/01 18:41:37 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shared.h"
 
-void push(t_stack **a, t_stack **b)
+void	push(t_stack **a, t_stack **b)
 {
-	t_stack *tmp;
-	t_stack *b_new_head;
+	t_stack	*tmp;
+	t_stack	*b_new_head;
 
 	if (!(*b))
-		return;
+		return ;
 	tmp = *b;
 	b_new_head = (*b)->next;
 	if (!(*a))
@@ -34,13 +34,13 @@ void push(t_stack **a, t_stack **b)
 	*b = b_new_head;
 }
 
-void reverse_rotate(t_stack **head)
+void	reverse_rotate(t_stack **head)
 {
-	t_stack *tmp;
-	t_stack *current;
+	t_stack	*tmp;
+	t_stack	*current;
 
 	if (!(*head) || !((*head)->next))
-		return;
+		return ;
 	current = *head;
 	while (current->next)
 	{
@@ -48,7 +48,7 @@ void reverse_rotate(t_stack **head)
 		{
 			tmp = current->next;
 			current->next = NULL;
-			break;
+			break ;
 		}
 		current = current->next;
 	}
@@ -56,13 +56,13 @@ void reverse_rotate(t_stack **head)
 	*head = tmp;
 }
 
-void rotate(t_stack **head)
+void	rotate(t_stack **head)
 {
-	t_stack *tmp;
-	t_stack *current;
+	t_stack	*tmp;
+	t_stack	*current;
 
 	if (!(*head) || !((*head)->next))
-		return;
+		return ;
 	tmp = *head;
 	*head = (*head)->next;
 	current = *head;
@@ -72,13 +72,13 @@ void rotate(t_stack **head)
 	tmp->next = NULL;
 }
 
-void swap(t_stack **head)
+void	swap(t_stack **head)
 {
-	t_stack *tmp;
+	t_stack	*tmp;
 
 	tmp = *head;
 	if (!tmp || !(tmp->next))
-		return;
+		return ;
 	*head = (*head)->next;
 	tmp->next = (*head)->next;
 	(*head)->next = tmp;

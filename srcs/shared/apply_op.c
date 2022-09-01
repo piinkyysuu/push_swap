@@ -6,24 +6,24 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/12 17:54:51 by thule             #+#    #+#             */
-/*   Updated: 2022/08/24 17:59:45 by thle             ###   ########.fr       */
+/*   Updated: 2022/09/01 18:37:48 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shared.h"
 
-static int get_op_index(char *op)
+static int	get_op_index(char *op)
 {
-	char **str;
-	int index;
+	char	**str;
+	int		index;
 
 	index = 0;
 	str = (char *[]){"sa", "sb", "ss", "ra", "rb", "rr",
-					 "rra", "rrb", "rrr", "pa", "pb"};
+		"rra", "rrb", "rrr", "pa", "pb"};
 	while (index < 11)
 	{
 		if (!ft_strcmp(str[index], op))
-			break;
+			break ;
 		index++;
 	}
 	return (index);
@@ -34,10 +34,10 @@ get_op_index will(op) will be called to check for the corresponding op index
 if it is more than 11 (not correct op), return (0)
 else, call the op function and return (1)
 */
-int apply_op(char *op, t_stack **a, t_stack **b)
+int	apply_op(char *op, t_stack **a, t_stack **b)
 {
-	void (*array[3])(t_stack **head);
-	int index;
+	void	(*array[3])(t_stack **head);
+	int		index;
 
 	index = get_op_index(op);
 	array[SWAP] = swap;

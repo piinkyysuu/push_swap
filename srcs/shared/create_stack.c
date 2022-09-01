@@ -6,7 +6,7 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 16:10:33 by thule             #+#    #+#             */
-/*   Updated: 2022/09/01 17:10:54 by thle             ###   ########.fr       */
+/*   Updated: 2022/09/01 18:40:14 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@
 Check for duplicates, if yes, return 0
 If no duplicates at all, insert new element at the end of the list then return 1
 */
-static int check_then_insert(t_stack **head, int value)
+static int	check_then_insert(t_stack **head, int value)
 {
-	t_stack *tmp;
+	t_stack	*tmp;
 
 	tmp = *head;
 	while (tmp)
@@ -30,7 +30,7 @@ static int check_then_insert(t_stack **head, int value)
 			tmp->next = create_new_element(value);
 			if (tmp->next == NULL)
 				return (0);
-			break;
+			break ;
 		}
 		tmp = tmp->next;
 	}
@@ -43,15 +43,15 @@ static int check_then_insert(t_stack **head, int value)
 	return (1);
 }
 
-
 /*
-Return 1 if there is only spaces or/and numbers, or minus/plus right in front of digits.
+Return 1 if there is only spaces or/and numbers, 
+or minus/plus right in front of digits.
 Otherwise, return 0
 */
-static int raw_form_check(char *array[])
+static int	raw_form_check(char *array[])
 {
-	int x;
-	int y;
+	int	x;
+	int	y;
 
 	x = 1;
 	y = 0;
@@ -63,7 +63,7 @@ static int raw_form_check(char *array[])
 			if (!ft_isdigit(array[x][y]) && !ft_isspace(array[x][y]) &&
 				array[x][y] != '-' && array[x][y] != '+')
 				return (0);
-			if ((array[x][y] == '-' || array[x][y] == '+') && 
+			if ((array[x][y] == '-' || array[x][y] == '+') &&
 				!ft_isdigit(array[x][y + 1]))
 				return (0);
 			y++;
@@ -77,10 +77,10 @@ static int raw_form_check(char *array[])
 if the number is negative, return number length + 1
 else if the number is positive, return number length
 */
-static int number_len(long n)
+static int	number_len(long n)
 {
-	int len;
-	int sign;
+	int	len;
+	int	sign;
 
 	len = 0;
 	sign = 0;
@@ -104,11 +104,11 @@ Each argv will be checked and saved as number and saved into the list
 If there is error, return (-1)
 else, return (amount)
 */
-static int create_stack_helper(int index, char *array[], t_stack **head)
+static int	create_stack_helper(int index, char *array[], t_stack **head)
 {
-	long number;
-	int count;
-	
+	long	number;
+	int		count;
+
 	count = 0;
 	while (*(array[index]))
 	{
@@ -127,19 +127,19 @@ static int create_stack_helper(int index, char *array[], t_stack **head)
 		while (ft_isspace(*(array[index])))
 			(array[index])++;
 	}
-	return count;
+	return (count);
 }
 
 /*
 Return -1 if there's an error (duplicate numbers or other chars)
 else, return amount
 */
-int create_stack(int amount, char *array[], t_stack **head)
+int	create_stack(int amount, char *array[], t_stack **head)
 {
-	size_t index;
-	long number;
-	int count;
-	int res;
+	size_t	index;
+	long	number;
+	int		count;
+	int		res;
 
 	count = 0;
 	index = 1;
