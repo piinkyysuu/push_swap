@@ -6,7 +6,7 @@ from subprocess import call
 import subprocess as sp
 import sys
 
-path = '/Users/thule/Desktop/projects/push_swap/'
+path = '/Users/thle/Desktop/projects/push_swap/'
 push_swap = path + 'push_swap'
 checker = path + 'checker'
 
