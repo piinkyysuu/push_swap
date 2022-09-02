@@ -6,7 +6,7 @@
 #    By: thle <thle@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/23 14:12:18 by thule             #+#    #+#              #
-#    Updated: 2022/09/01 18:44:17 by thle             ###   ########.fr        #
+#    Updated: 2022/09/02 16:48:12 by thle             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,22 +37,11 @@ CHECKER_OBJS = $(addprefix $(OBJS_DIR), $(CHECKER_FILES:%.c=%.o))
 PUSH_SWAP_OBJS = $(addprefix $(OBJS_DIR), $(PUSH_SWAP_FILES:%.c=%.o))
 SHARED_OBJS = $(addprefix $(OBJS_DIR), $(SHARED_FILES:%.c=%.o))
 
-#this testing needs removing
-TESTING_FILES = testing.c
-TESTING_SRC = $(addprefix $(PUSH_SWAP_SRC_DIR), $(TESTING_FILES))
-TESTING_OBJS = $(addprefix $(OBJS_DIR), $(TESTING_FILES:%.c=%.o))
-
-
 LIB_DIR = ./libft/
 LIB = $(addprefix $(LIB_DIR), libft.a)
 LIB_INCLUDE = ./libft/includes/
 
-# all: $(CHECKER)
 all: $(PUSH_SWAP) $(CHECKER)
-
-#this testing needs removing
-testing: $(TESTING_OBJS) $(SHARED_OBJS) $(LIB)
-	@$(CC) -o testing $(FLAGS) $(TESTING_OBJS) $(SHARED_OBJS) -L$(LIB_DIR) -lft
 
 $(PUSH_SWAP): $(PUSH_SWAP_OBJS) $(SHARED_OBJS) $(LIB)
 	@$(CC) $(DEBUG_FLAG) -o $(PUSH_SWAP) $(FLAGS) $(PUSH_SWAP_OBJS) $(SHARED_OBJS) -L$(LIB_DIR) -lft
