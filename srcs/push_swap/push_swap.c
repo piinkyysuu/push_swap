@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 13:28:16 by thle              #+#    #+#             */
-/*   Updated: 2022/09/01 18:58:08 by thle             ###   ########.fr       */
+/*   Updated: 2022/09/05 11:56:28 by thule            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int	main(int argc, char *argv[])
 		return (write(2, "Error\n", 6), 0);
 	if (size != 1 && !is_stack_sorted(a.head))
 	{
-		if (size >= 3 && size < 1)
+		if (size <= 3 && size > 1)
 			solve_three(&op, &a, size);
 		else
 			merge_sort(&op, &a, &b, get_size(a.head));
