@@ -6,11 +6,9 @@
 /*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 13:28:16 by thle              #+#    #+#             */
-/*   Updated: 2022/09/05 11:56:28 by thule            ###   ########.fr       */
+/*   Updated: 2022/09/05 12:02:24 by thule            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-/* Aims for merge sort method for bigger than 5 */
 
 #include "push_swap.h"
 
