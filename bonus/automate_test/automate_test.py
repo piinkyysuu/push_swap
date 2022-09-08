@@ -1,14 +1,12 @@
-import cmd
-from re import sub
 import subprocess
 import random
-from subprocess import call
-import subprocess as sp
-import sys
 
-path = '/Users/thle/Desktop/projects/push_swap/'
-push_swap = path + 'push_swap'
-checker = path + 'checker'
+import sys
+sys.path.insert(0, '..')
+from config import PUSH_SWAP, CHECKER
+
+push_swap = PUSH_SWAP
+checker = CHECKER
 
 class colors:
 	reset = '\033[0m'
