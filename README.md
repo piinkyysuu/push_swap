@@ -50,8 +50,7 @@ In case of error, program will display "Error" followed by '\n' on the standard 
 
 ***Usage:*** 
 
-<img width="589" alt="Screenshot 2022-08-26 at 22 54 57" src="https://user-images.githubusercontent.com/25098095/186981552-1ae795c9-004d-4c47-b2af-5b7c8c127d57.png">
-
+<img width="495" alt="checker_eg" src="https://user-images.githubusercontent.com/25098095/189168118-4a549b08-ea7d-4713-ae94-2b0e0d81d962.png">
 
 ---
 
@@ -71,7 +70,40 @@ Different from checker, push_swap's aim is to produce as small amount of instruc
 
 ***Usage:***
 
-<img width="589" alt="Screenshot 2022-08-26 at 22 51 31" src="https://user-images.githubusercontent.com/25098095/186981200-ce15cd83-e883-4928-9419-14613844e4ba.png">
+<img width="495" alt="push_swap_eg" src="https://user-images.githubusercontent.com/25098095/189168183-d29505d4-e854-4265-b15c-8552eb7219ea.png">
 
-<img width="589" alt="Screenshot 2022-08-26 at 22 52 04" src="https://user-images.githubusercontent.com/25098095/186981146-d69c7ffb-4e4d-4e72-af19-79e8a44c2359.png">
+<img width="495" alt="push_swap_checker_eg" src="https://user-images.githubusercontent.com/25098095/189168229-2ef8f400-d9cb-4413-abea-76c6edc5214e.png">
+
+
+## *Bonuses:*
+There are two bonuses that I have done
+- visualizer:
+
+![new_med](https://user-images.githubusercontent.com/25098095/189178593-5c9a4c3f-573b-43d2-82cd-139d081933c8.gif)
+
+
+
+
+- test_automate: automate test for a fast evaluation and testing. In this test, it will check:
+  -   all the permutation of 3 number stack and 5 number stack. 
+  -   check 100 and 500 number stack with 50 permutations of numbers
+  -   it will present the worst case, the best case, the average amount of instructions and the score according to the evaluation form
+  -   it will create a file called `test_case` to display which string of number was passed as command-line arguments for each case
+
+***Configuration:***
+
+From `bonus/config.py`
+- For `automate_test.py`
+  - `PUSH_SWAP_PATH` and `CHECKER_PATH` must be provided before executing 
+- For `visualizer.py`
+  - `pygame` must be installed. To install: `pip3 install pygame`
+  - `PUSH_SWAP_PATH` must be provided before executing 
+  - Optional: `SIZE` and `DELAY_TIME` can be changed
+
+***Running program:***
+
+To run either program, user need to be at the immediate directory where the progam is store
+- `python3 automate_test.py`
+- `python3 visualizer.py`
+
 
