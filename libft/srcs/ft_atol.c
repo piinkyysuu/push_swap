@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atol.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
+/*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 15:01:45 by thule             #+#    #+#             */
-/*   Updated: 2022/07/01 15:02:01 by thule            ###   ########.fr       */
+/*   Updated: 2022/09/12 12:23:45 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-long ft_atol(const char *str)
+long	ft_atol(const char *str)
 {
-	short int sign;
-	unsigned long acc;
+	unsigned long	acc;
+	short int		sign;
 
 	sign = 1;
 	acc = 0;
