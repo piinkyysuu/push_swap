@@ -6,7 +6,7 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 14:46:18 by thule             #+#    #+#             */
-/*   Updated: 2022/09/01 18:11:28 by thle             ###   ########.fr       */
+/*   Updated: 2022/09/12 17:25:15 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,20 +24,14 @@ typedef struct s_stack
 	struct s_stack	*next;
 }					t_stack;
 
-enum e_instructions
+typedef struct s_op
 {
-	sa,
-	ra,
-	rra,
-	sb,
-	rb,
-	rrb,
-	ss,
-	rr,
-	rrr,
-	pa,
-	pb
-};
+	char		*op;
+	char		stack;
+	short int	operation;
+	short int	len;
+	struct s_op	*next;
+}				t_op;
 
 enum e_op
 {
@@ -63,5 +57,8 @@ int		create_stack(int amount, char *array[], t_stack **head);
 
 /* apply_op.c */
 int		apply_op(char *op, t_stack **a, t_stack **b);
+
+/* append_op_list.c */
+void	append_op_list(t_op **head, char *op);
 
 #endif

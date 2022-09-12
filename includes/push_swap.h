@@ -6,7 +6,7 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/06 11:46:00 by thule             #+#    #+#             */
-/*   Updated: 2022/09/01 18:45:21 by thle             ###   ########.fr       */
+/*   Updated: 2022/09/12 16:28:13 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,6 @@
 # define ASC 2
 # define DESC 1
 # define EMPTY LONG_MIN
-
-typedef struct s_op
-{
-	char		*op;
-	char		stack;
-	short int	operation;
-	short int	len;
-	struct s_op	*next;
-}				t_op;
 
 typedef struct s_info
 {
@@ -81,7 +72,5 @@ long	get_value(t_stack *stack, int value, int order);
 t_op	*split_instructions(t_op *first);
 void	link_two_op_lists(t_op *first, t_op *first_tail, t_op *second_head);
 void	print_then_del_op(t_op **head);
-void	append_op_list(t_op **head, char *op);
-void	update_op_node(t_op *node, char *op);
 
 #endif

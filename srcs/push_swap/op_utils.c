@@ -6,53 +6,11 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/01 16:51:58 by thle              #+#    #+#             */
-/*   Updated: 2022/09/01 18:52:12 by thle             ###   ########.fr       */
+/*   Updated: 2022/09/12 16:28:39 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
-
-void	update_op_node(t_op *node, char *op)
-{
-	int	len;
-
-	len = ft_strlen(op);
-	node->len = len;
-	node->op = op;
-	node->stack = op[len - 1];
-	if (len == 3)
-		node->operation = R_ROT;
-	else
-	{
-		if (op[0] == 's')
-			node->operation = SWAP;
-		else if (op[0] == 'r')
-			node->operation = ROT;
-		else
-			node->operation = PUSH;
-	}
-	node->next = NULL;
-}
-
-void	append_op_list(t_op **head, char *op)
-{
-	t_op	*new;
-	t_op	*tmp;
-
-	tmp = *head;
-	new = (t_op *)malloc(sizeof(t_op));
-	if (!new)
-		exit(1);
-	update_op_node(new, op);
-	if (!tmp)
-	{
-		*head = new;
-		return ;
-	}
-	while (tmp->next)
-		tmp = tmp->next;
-	tmp->next = new;
-}
 
 t_op	*split_instructions(t_op *first)
 {

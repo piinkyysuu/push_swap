@@ -6,12 +6,28 @@
 /*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/23 14:39:09 by thule             #+#    #+#             */
-/*   Updated: 2022/09/01 17:11:50 by thle             ###   ########.fr       */
+/*   Updated: 2022/09/12 19:02:21 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "shared.h"
+
+static void	del_op_list(t_op **head)
+{
+	t_op	*next;
+	t_op	*current;
+
+	current = *head;
+	while (current)
+	{
+		next = current->next;
+		ft_strdel(&(current->op));
+		free(current);
+		current = next;
+	}
+	*head = NULL;
+}
 
 /*
 Central point for reading op_arrays from standard input
@@ -22,24 +38,27 @@ return (-1) if the op is not correct
 return (0) if the stack is not sorted
 return (1) if the stack is sorted
 */
-static int	read_then_apply_op(t_stack *a, t_stack *b)
+static int	read_then_apply_op(int fd, t_stack **a, t_stack **b)
 {
-	char	*op;
+	t_op	*op_head;
+	t_op	*tmp;
 	int		result;
+	char	*op;
 
-	op = NULL;
 	result = 1;
-	while (get_next_line(0, &op))
+	op = NULL;
+	op_head = NULL;
+	while (get_next_line(fd, &op))
+		append_op_list(&op_head, op);
+	tmp = op_head;
+	while (tmp)
 	{
-		if (!apply_op(op, &a, &b))
-		{
+		if (apply_op(tmp->op, a, b) == 0)
 			result = -1;
-			ft_strdel(&op);
-			break ;
-		}
-		ft_strdel(&op);
+		tmp = tmp->next;
 	}
-	if ((!is_stack_sorted(a) || b) && result != -1)
+	del_op_list(&op_head);
+	if ((!is_stack_sorted(*a) || *b) && result != -1)
 		result = 0;
 	return (result);
 }
@@ -53,12 +72,12 @@ int	main(int argc, char *argv[])
 	a = NULL;
 	b = NULL;
 	if (argc < 2)
-		return (write(1, "\n", 1), 0);
+		return (0);
 	if (create_stack(argc, argv, &a) == -1)
 		write(2, "Error\n", 6);
 	else
 	{
-		result = read_then_apply_op(a, b);
+		result = read_then_apply_op(0, &a, &b);
 		if (result == -1)
 			write(2, "Error\n", 6);
 		else if (result == 0)
