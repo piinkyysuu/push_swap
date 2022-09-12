@@ -7,7 +7,6 @@ checker
 push_swap
 !push_swap/
 .vscode
-push_swap.dSYM
-a.out.dSYM
+*.dSYM
 __pycache__
 test_case
