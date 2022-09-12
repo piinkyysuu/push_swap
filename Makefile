@@ -6,7 +6,7 @@
 #    By: thle <thle@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/23 14:12:18 by thule             #+#    #+#              #
-#    Updated: 2022/09/02 16:48:12 by thle             ###   ########.fr        #
+#    Updated: 2022/09/12 11:59:48 by thle             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ FLAGS = -Wall -Wextra -Werror
 CHECKER = checker
 PUSH_SWAP = push_swap
 
-DEBUG_FLAG = -g
+DEBUG_FLAG =
 
 INCLUDES_DIR = ./includes/
 
