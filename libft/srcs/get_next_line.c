@@ -6,16 +6,16 @@
 /*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/20 16:16:36 by thule             #+#    #+#             */
-/*   Updated: 2022/01/14 10:58:32 by thule            ###   ########.fr       */
+/*   Updated: 2022/09/21 14:01:57 by thule            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static	int	append_line(char **holder, char **line)
+static	int	create_line(char **holder, char **line)
 {
+	char	*tmp;
 	int		index;
-	char	*tmp_holder;
 
 	index = 0;
 	while ((*holder)[index] && (*holder)[index] != '\n')
@@ -23,13 +23,31 @@ static	int	append_line(char **holder, char **line)
 	*line = ft_strsub(*holder, 0, index);
 	if ((*holder)[index] == '\n' && (*holder)[index + 1] != '\0')
 	{	
-		tmp_holder = ft_strsub(*holder, index + 1, ft_strlen(*holder) - index);
+		tmp = ft_strsub(*holder, index + 1, ft_strlen(*holder) - index);
 		ft_strdel(holder);
-		*holder = tmp_holder;
+		*holder = tmp;
 	}
 	else
 		ft_strdel(holder);
+	if (!(*line) || !tmp)
+		return (-1);
 	return (1);
+}
+
+static char	*connect_holder_and_buf(char *holder, char *buf)
+{
+	char	*temp;
+
+	temp = NULL;
+	if (!holder)
+		holder = ft_strdup(buf);
+	else
+	{
+		temp = ft_strjoin(holder, buf);
+		ft_strdel(&holder);
+		holder = temp;
+	}
+	return (holder);
 }
 
 static	int	result(char **holder, char **line, int ret, int fd)
@@ -39,14 +57,13 @@ static	int	result(char **holder, char **line, int ret, int fd)
 	else if (*holder == NULL && ret == 0)
 		return (0);
 	else
-		return (append_line(holder, line));
+		return (create_line(holder, line));
 }
 
 int	get_next_line(const int fd, char **line)
 {
 	static char	*holder[FD_SIZE];
 	char		buf[BUFF_SIZE + 1];
-	char		*temp;
 	int			ret;
 
 	ret = 1;
@@ -56,16 +73,11 @@ int	get_next_line(const int fd, char **line)
 		if (ret > 0)
 		{
 			buf[ret] = '\0';
+			holder[fd] = connect_holder_and_buf(holder[fd], buf);
 			if (!holder[fd])
-				holder[fd] = ft_strdup(buf);
-			else
-			{
-				temp = ft_strjoin(holder[fd], buf);
-				ft_strdel(&holder[fd]);
-				holder[fd] = temp;
-			}
+				return (-1);
 		}
-		if (ft_strchr(buf, '\n') || ret <= 0)
+		if (ret <= 0 || ft_strchr(buf, '\n'))
 			break ;
 	}
 	return (result(&holder[fd], line, ret, fd));
