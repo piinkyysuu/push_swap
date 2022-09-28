@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: thle <thle@student.42.fr>                  +#+  +:+       +#+         #
+#    By: thule <thule@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/23 14:12:18 by thule             #+#    #+#              #
-#    Updated: 2022/09/12 17:59:07 by thle             ###   ########.fr        #
+#    Updated: 2022/09/28 13:42:01 by thule            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -45,12 +45,15 @@ all: $(PUSH_SWAP) $(CHECKER)
 
 $(PUSH_SWAP): $(PUSH_SWAP_OBJS) $(SHARED_OBJS) $(LIB)
 	@$(CC) $(DEBUG_FLAG) -o $(PUSH_SWAP) $(FLAGS) $(PUSH_SWAP_OBJS) $(SHARED_OBJS) -L$(LIB_DIR) -lft
+	@echo "Compiled $(PUSH_SWAP)"
 
 $(CHECKER): $(CHECKER_OBJS) $(SHARED_OBJS) $(LIB)
 	@$(CC) $(DEBUG_FLAG) -o $(CHECKER) $(FLAGS) $(CHECKER_OBJS) $(SHARED_OBJS) -L$(LIB_DIR) -lft
+	@echo "Compiled $(CHECKER)"
 
-$(LIB): $(wildcard libft/*.o)
-	@$(MAKE) -sC ./libft
+$(LIB): libft/srcs/*.c
+	@$(MAKE) -sC $(LIB_DIR)
+	@echo "Compiled $(LIB)"
 
 $(OBJS_DIR)%.o: $(CHECKER_SRC_DIR)%.c
 	@mkdir -p $(OBJS_DIR)
