@@ -10,3 +10,4 @@ push_swap
 *.dSYM
 __pycache__
 test_case
+err.log
