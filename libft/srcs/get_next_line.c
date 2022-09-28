@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thule <thule@student.42.fr>                +#+  +:+       +#+        */
+/*   By: thle <thle@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/20 16:16:36 by thule             #+#    #+#             */
-/*   Updated: 2022/09/21 14:01:57 by thule            ###   ########.fr       */
+/*   Updated: 2022/09/22 13:21:34 by thle             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,8 @@ int	get_next_line(const int fd, char **line)
 	int			ret;
 
 	ret = 1;
+	if (holder[fd] && ft_strchr(holder[fd], '\n'))
+		return (result(&holder[fd], line, ret, fd));
 	while (ret > 0 && line)
 	{
 		ret = read(fd, buf, BUFF_SIZE);
